@@ -1,4 +1,4 @@
-import LoginScreen from '@/screens/Login/LoginScreen';
+import LoginScreen from '@/screens/login/LoginScreen';
 import { View } from 'react-native';
 
 export default function Login() {
