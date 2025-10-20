@@ -19,10 +19,10 @@ export default function ProfileScreen() {
   return (
     <SafeAreaView className="flex-1 justify-between p-6">
       <View className="gap-6 p-6">
-        {/* <ProfileImagePicker
+        <ProfileImagePicker
           onSelect={handleSelectImgage}
           selectedImage={selectedImage}
-        /> */}
+        />
         <TextInput
           className="rounded-xl border border-gray-200 bg-white px-4 py-3 font-inter text-lg focus:border-primary focus:outline-none focus:ring-primary"
           placeholder="Username"
