@@ -1,8 +1,8 @@
 import { verifyOtp } from '@/services/auth-service/auth-service';
 import { router, useLocalSearchParams } from 'expo-router';
-import { useState } from 'react';
+import { useState, useTransition } from 'react';
 import {
-  Alert,
+  ActivityIndicator,
   KeyboardAvoidingView,
   Pressable,
   Text,
@@ -13,22 +13,25 @@ import { OtpInput } from 'react-native-otp-entry';
 export default function VerifyScreen() {
   const { email } = useLocalSearchParams<{ email: string }>();
   const [otp, setOtp] = useState<string>('');
-  const [loading, setLoading] = useState<boolean>(false);
+  const [isPending, startTransition] = useTransition();
 
-  // const handleVerify = async () => {
-  //   try {
-  //     setLoading(true);
-  //     const session = await verifyOtp(email!, otp);
-  //     Alert.alert('Success', 'Email verified successfully!');
-  //     console.log('User session:', session);
-  //     router.replace('/(auth)/login');
-  //     screen;
-  //   } catch (error: any) {
-  //     Alert.alert('Invalid OTP', error.message);
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
+  const handleVerify = () => {
+    startTransition(async () => {
+      try {
+        const session = await verifyOtp(email!, otp);
+        startTransition(() => {
+          router.replace({
+            pathname: '/(auth)/profile',
+            params: {
+              userId: session.user?.id
+            }
+          });
+        });
+      } catch (err) {
+        console.log(err);
+      }
+    });
+  };
 
   return (
     <KeyboardAvoidingView>
@@ -56,13 +59,17 @@ export default function VerifyScreen() {
         </View>
 
         <Pressable
-          // onPress={handleVerify}
-          disabled={loading}
-          className="rounded-xl bg-primary py-4"
+          onPress={handleVerify}
+          disabled={isPending}
+          className="mt-4 rounded-xl bg-primary px-4 py-3"
         >
-          <Text className="text-center text-lg font-semibold text-white">
-            {loading ? 'Verifying...' : 'Verify'}
-          </Text>
+          {isPending ? (
+            <ActivityIndicator color="#ffff" />
+          ) : (
+            <Text className="text-center text-lg font-semibold text-white">
+              Verify
+            </Text>
+          )}
         </Pressable>
       </View>
     </KeyboardAvoidingView>
