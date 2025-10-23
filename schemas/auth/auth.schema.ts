@@ -10,3 +10,8 @@ export const createUserSchema = z.object({
   currentBalance: z.string('Enter your current balance to track your finance'),
   profilePicture: z.string().optional()
 });
+
+export const loginSchema = z.object({
+  email: z.email('email is required'),
+  password: z.string('Password is required')
+});

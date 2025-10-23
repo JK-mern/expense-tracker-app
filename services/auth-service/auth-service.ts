@@ -1,5 +1,6 @@
 import { supabase } from '@/lib/supabase/supabase';
-import { AuthSchemaType } from '@/schemas/auth';
+import { AuthSchemaType, Login } from '@/schemas/auth';
+import { router } from 'expo-router';
 
 export const regisetUser = async ({ email, password }: AuthSchemaType) => {
   const { error, data } = await supabase.auth.signUp({
@@ -22,4 +23,30 @@ export const verifyOtp = async (email: string, token: string) => {
   });
   if (error) throw new Error(error.message);
   return data;
+};
+
+export const signInWithEmail = async ({ email, password }: Login) => {
+  const { data, error } = await supabase.auth.signInWithPassword({
+    email,
+    password
+  });
+
+  if (error?.code === 'invalid_credentials') {
+    return false;
+  }
+
+  if (error?.code === 'email_not_confirmed') {
+    await supabase.auth.resend({
+      email: email,
+      type: 'signup'
+    });
+    router.push({
+      pathname: '/(auth)/verify',
+      params: { email: email }
+    });
+    return;
+  }
+
+  if (error) throw new Error(error.message);
+  return true;
 };
