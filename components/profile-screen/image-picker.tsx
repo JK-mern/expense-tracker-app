@@ -44,12 +44,7 @@ export default function ProfileImagePicker({
               className="h-28 w-28 rounded-full"
             />
           ) : (
-            <Image
-              source={{
-                uri: ProfileAvatar.uri
-              }}
-              className="h-28 w-28 rounded-full"
-            />
+            <Image source={ProfileAvatar} className="h-28 w-28 rounded-full" />
           )}
 
           <View className="absolute bottom-0 right-0 h-8 w-8 items-center justify-center rounded-full bg-green-500">

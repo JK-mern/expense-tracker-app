@@ -8,12 +8,12 @@ type UploadImageType = {
 export const uploadImage = async ({ uri, userId }: UploadImageType) => {
   const filePath = `profile-pictures/${userId}.jpg`;
   const response = await fetch(uri);
-  const blob = await response.blob();
+  const arrayBuffer = await response.arrayBuffer();
 
   try {
     const { error, data } = await supabase.storage
       .from('images')
-      .upload(filePath, blob, {
+      .upload(filePath, arrayBuffer, {
         cacheControl: '3600',
         upsert: false
       });

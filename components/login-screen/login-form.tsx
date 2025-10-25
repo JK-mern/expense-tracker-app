@@ -45,7 +45,7 @@ export default function LoginForm() {
   };
 
   return (
-    <View className="justify-center space-y-6">
+    <View className="flex justify-center gap-4">
       <View>
         <Controller
           name="email"
@@ -114,18 +114,20 @@ export default function LoginForm() {
         </Text>
         <View className="flex-1 border-t border-gray-300"></View>
       </View>
-      <Pressable className="flex flex-row items-center justify-center rounded-xl border border-gray-200 bg-white px-4 py-3">
-        <GoogleLogo width={20} height={20} className="mr-2" />
-        <Text className="text-center font-inter-medium text-base">
-          Login with Google
+      <View>
+        <Pressable className="flex flex-row items-center justify-center rounded-xl border border-gray-200 bg-white px-4 py-3">
+          <GoogleLogo width={20} height={20} className="mr-2" />
+          <Text className="ml-2 text-center font-inter-medium text-base">
+            Login with Google
+          </Text>
+        </Pressable>
+        <Text className="mt-4 text-center font-inter font-normal text-text-light">
+          {"Don't have an account ? "}
+          <Link href={'/(auth)/register'} className="font-inter text-primary">
+            Sign up
+          </Link>
         </Text>
-      </Pressable>
-      <Text className="mt-8 text-center font-inter font-normal text-text-light">
-        {"Don't have an account ?"}
-        <Link href={'/(auth)/register'} className="font-inter text-primary">
-          Sign up
-        </Link>
-      </Text>
+      </View>
     </View>
   );
 }

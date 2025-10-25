@@ -5,8 +5,10 @@ import {
   Inter_700Bold,
   useFonts
 } from '@expo-google-fonts/inter';
+import * as NavigationBar from 'expo-navigation-bar';
 import { SplashScreen, Stack } from 'expo-router';
 import { useCallback, useEffect } from 'react';
+import { Platform } from 'react-native';
 import '../global.css';
 
 export default function RootLayout() {
@@ -28,6 +30,12 @@ export default function RootLayout() {
       console.error('Font loading error:', fontError);
     }
   }, [fontError]);
+
+  useEffect(() => {
+    if (Platform.OS === 'android') {
+      NavigationBar.setVisibilityAsync('hidden');
+    }
+  });
 
   if (!fontsLoaded && !fontError) {
     return null;
