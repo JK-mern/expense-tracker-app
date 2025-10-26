@@ -10,6 +10,8 @@ import { SplashScreen, Stack } from 'expo-router';
 import { useCallback, useEffect } from 'react';
 import { Platform } from 'react-native';
 import '../global.css';
+import { AuthProvider } from '@/providers/auth-provider';
+import { LoadingProvider } from '@/providers/loading-provider';
 
 export default function RootLayout() {
   const [fontsLoaded, fontError] = useFonts({
@@ -42,10 +44,14 @@ export default function RootLayout() {
   }
 
   return (
-    <Stack
-      screenOptions={{
-        headerShown: false
-      }}
-    />
+    <AuthProvider>
+      <LoadingProvider>
+        <Stack
+          screenOptions={{
+            headerShown: false
+          }}
+        />
+      </LoadingProvider>
+    </AuthProvider>
   );
 }

@@ -1,5 +1,6 @@
 import { checkUserNameExist, createUser } from '@/api/auth.api';
 import ProfileImagePicker from '@/components/profile-screen/image-picker';
+import { useLoading } from '@/providers/loading-provider';
 import { createUserSchema, CreateUserType } from '@/schemas/auth';
 import { uploadImage } from '@/services/image-upload/image-upload';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -17,7 +18,6 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function ProfileScreen() {
   const { userId } = useLocalSearchParams<{ userId: string }>();
-  const [isPending, startTransition] = useTransition();
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const {
     formState: { errors },
@@ -26,35 +26,35 @@ export default function ProfileScreen() {
   } = useForm<CreateUserType>({
     resolver: zodResolver(createUserSchema)
   });
+  const { hideLoading, isLoading, showLoading } = useLoading();
 
   const handleSelectImgage = (img: string) => {
     setSelectedImage(img);
   };
 
   const onSubmit: SubmitHandler<CreateUserType> = async (data) => {
-    startTransition(async () => {
-      try {
-        const isUserNameAvailable = await checkUserNameExist(data.userName);
-        if (!isUserNameAvailable.data.isUserNameAvailable) {
-          //TODO : Show toast when toast component is ready
-        }
-        if (selectedImage) {
-          const uploadedUrlPath = await uploadImage({
-            uri: selectedImage,
-            userId: userId
-          });
-          data.profilePicture = uploadedUrlPath;
-        }
-        const isSignupSuccess = await createUser(data);
-        if (isSignupSuccess.success) {
-          startTransition(() => {
-            router.push('/(auth)/login'); //TODO: Route to homepage when its ready
-          });
-        }
-      } catch (error) {
-        console.log(error);
+    try {
+      showLoading();
+      const isUserNameAvailable = await checkUserNameExist(data.userName);
+      if (!isUserNameAvailable.data.isUserNameAvailable) {
+        //TODO : Show toast when toast component is ready
       }
-    });
+      if (selectedImage) {
+        const uploadedUrlPath = await uploadImage({
+          uri: selectedImage,
+          userId: userId
+        });
+        data.profilePicture = uploadedUrlPath;
+      }
+      const isSignupSuccess = await createUser(data);
+      if (isSignupSuccess.success) {
+        router.push('/(auth)/login'); //TODO: Route to homepage when its ready
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
+      hideLoading();
+    }
   };
 
   return (
@@ -112,9 +112,9 @@ export default function ProfileScreen() {
         <Pressable
           className="rounded-xl bg-primary px-4 py-3"
           onPress={handleSubmit(onSubmit)}
-          disabled={isPending}
+          disabled={isLoading}
         >
-          {isPending ? (
+          {isLoading ? (
             <ActivityIndicator color="#ffff" />
           ) : (
             <Text className="text-center font-inter-bold text-base text-white">

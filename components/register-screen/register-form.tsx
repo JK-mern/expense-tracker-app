@@ -3,7 +3,6 @@ import { authSchema, AuthSchemaType } from '@/schemas/auth';
 import { regisetUser } from '@/services/auth-service/auth-service';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Link, router } from 'expo-router';
-import { useTransition } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import {
   ActivityIndicator,
@@ -13,6 +12,7 @@ import {
   View
 } from 'react-native';
 import GoogleLogo from '../../assets/svgs/google-logo.svg';
+import { useLoading } from '@/providers/loading-provider';
 
 export default function RegisterForm() {
   const {
@@ -26,27 +26,28 @@ export default function RegisterForm() {
       password: ''
     }
   });
-  const [isPending, startTransition] = useTransition();
-
-  const onSubmit: SubmitHandler<AuthSchemaType> = (data) => {
+  const { isLoading, showLoading, hideLoading } = useLoading();
+  console.log(isLoading);
+  const onSubmit: SubmitHandler<AuthSchemaType> = async (data) => {
     try {
-      startTransition(async () => {
-        const isUserExist = await checkUserExist({ email: data.email });
+      showLoading();
+      const isUserExist = await checkUserExist({ email: data.email });
+      if (isUserExist.data.userExist) {
+        return;
+      }
 
-        if (isUserExist.data.userExist) {
-          return;
-        }
-        const isRegisterSuccessfull = await regisetUser(data);
-        if (isRegisterSuccessfull) {
-          startTransition(() => {
-            router.push({
-              pathname: '/(auth)/verify',
-              params: { email: data.email }
-            });
-          });
-        }
-      });
-    } catch (error) {}
+      const isRegisterSuccessfull = await regisetUser(data);
+      if (isRegisterSuccessfull) {
+        router.push({
+          pathname: '/(auth)/verify',
+          params: { email: data.email }
+        });
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
+      hideLoading();
+    }
   };
 
   return (
@@ -100,9 +101,9 @@ export default function RegisterForm() {
       <Pressable
         className="rounded-xl bg-primary px-4 py-3"
         onPress={handleSubmit(onSubmit)}
-        disabled={isPending}
+        disabled={isLoading}
       >
-        {isPending ? (
+        {isLoading ? (
           <ActivityIndicator color="#ffff" />
         ) : (
           <Text className="text-center font-inter-bold text-base text-white">
