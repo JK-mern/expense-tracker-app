@@ -2,7 +2,7 @@ import { Login, loginSchema } from '@/schemas/auth';
 import { signInWithEmail } from '@/services/auth-service/auth-service';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Link, router } from 'expo-router';
-import { useState, useTransition } from 'react';
+import { useState } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import {
   ActivityIndicator,
@@ -12,9 +12,9 @@ import {
   View
 } from 'react-native';
 import GoogleLogo from '../../assets/svgs/google-logo.svg';
+import { useLoading } from '@/providers/loading-provider';
 
 export default function LoginForm() {
-  const [isPending, startTransition] = useTransition();
   const [, setIsErrorToastVisible] = useState<boolean>(false);
   const {
     control,
@@ -23,25 +23,23 @@ export default function LoginForm() {
   } = useForm<Login>({
     resolver: zodResolver(loginSchema)
   });
+  const { isLoading, hideLoading, showLoading } = useLoading();
 
-  const onSubmit: SubmitHandler<Login> = (data) => {
-    startTransition(async () => {
-      try {
-        const result = await signInWithEmail(data);
-        if (result) {
-          startTransition(() => {
-            setIsErrorToastVisible(false);
-            router.push('/(auth)/register'); //TODO : change to appropriate route
-          });
-        } else {
-          startTransition(() => {
-            setIsErrorToastVisible(true);
-          });
-        }
-      } catch (error) {
-        console.log(error);
+  const onSubmit: SubmitHandler<Login> = async (data) => {
+    try {
+      showLoading();
+      const result = await signInWithEmail(data);
+      if (result) {
+        setIsErrorToastVisible(false);
+        router.push('/(auth)/register'); //TODO : change to appropriate route
+      } else {
+        setIsErrorToastVisible(true);
       }
-    });
+    } catch (error) {
+      console.log(error);
+    } finally {
+      hideLoading();
+    }
   };
 
   return (
@@ -98,8 +96,9 @@ export default function LoginForm() {
       <Pressable
         className="rounded-xl bg-primary px-4 py-3"
         onPress={handleSubmit(onSubmit)}
+        disabled={isLoading}
       >
-        {isPending ? (
+        {isLoading ? (
           <ActivityIndicator color="#ffff" />
         ) : (
           <Text className="text-center font-inter-bold text-base text-white">

@@ -1,3 +1,4 @@
+import { useLoading } from '@/providers/loading-provider';
 import { verifyOtp } from '@/services/auth-service/auth-service';
 import { router, useLocalSearchParams } from 'expo-router';
 import { useState, useTransition } from 'react';
@@ -8,24 +9,23 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 export default function VerifyScreen() {
   const { email } = useLocalSearchParams<{ email: string }>();
   const [otp, setOtp] = useState<string>('');
-  const [isPending, startTransition] = useTransition();
+  const { isLoading, showLoading, hideLoading } = useLoading();
 
-  const handleVerify = () => {
-    startTransition(async () => {
-      try {
-        const session = await verifyOtp(email!, otp);
-        startTransition(() => {
-          router.navigate({
-            pathname: '/(auth)/profile',
-            params: {
-              userId: session.user?.id
-            }
-          });
-        });
-      } catch (err) {
-        console.log(err);
-      }
-    });
+  const handleVerify = async () => {
+    try {
+      showLoading();
+      const session = await verifyOtp(email!, otp);
+      router.navigate({
+        pathname: '/(auth)/profile',
+        params: {
+          userId: session.user?.id
+        }
+      });
+    } catch (err) {
+      console.log(err);
+    } finally {
+      hideLoading();
+    }
   };
 
   return (
@@ -54,10 +54,10 @@ export default function VerifyScreen() {
 
       <Pressable
         onPress={handleVerify}
-        disabled={isPending}
+        disabled={isLoading}
         className="mt-4 rounded-xl bg-primary px-4 py-3"
       >
-        {isPending ? (
+        {isLoading ? (
           <ActivityIndicator color="#ffff" />
         ) : (
           <Text className="text-center text-lg font-semibold text-white">
