@@ -1,9 +1,11 @@
-import { Text, View } from 'react-native';
+import { Link } from 'expo-router';
+import { Text } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function Home() {
   return (
-    <View>
+    <SafeAreaView>
       <Text>Home</Text>
-    </View>
+    </SafeAreaView>
   );
 }

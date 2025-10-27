@@ -8,8 +8,8 @@ import {
   useFonts
 } from '@expo-google-fonts/inter';
 import * as NavigationBar from 'expo-navigation-bar';
-import { SplashScreen, Stack } from 'expo-router';
-import { useCallback, useEffect } from 'react';
+import { Stack } from 'expo-router';
+import { useEffect } from 'react';
 import { Platform } from 'react-native';
 import '../global.css';
 
@@ -21,12 +21,6 @@ export default function RootLayout() {
     Inter_700Bold
   });
 
-  const onLayoutRootView = useCallback(async () => {
-    if (fontsLoaded || fontError) {
-      await SplashScreen.hideAsync();
-    }
-  }, [fontsLoaded, fontError]);
-
   useEffect(() => {
     if (fontError) {
       console.error('Font loading error:', fontError);
@@ -37,7 +31,7 @@ export default function RootLayout() {
     if (Platform.OS === 'android') {
       NavigationBar.setVisibilityAsync('hidden');
     }
-  });
+  }, []);
 
   if (!fontsLoaded && !fontError) {
     return null;
@@ -46,14 +40,20 @@ export default function RootLayout() {
   return (
     <AuthProvider>
       <LoadingProvider>
-        <Stack
-          screenOptions={{
-            headerShown: false
-          }}
-        >
-          <Stack.Screen name="(tabs)" />
-        </Stack>
+        <NavigationLayout />
       </LoadingProvider>
     </AuthProvider>
   );
 }
+
+const NavigationLayout = () => {
+  return (
+    <Stack
+      screenOptions={{
+        headerShown: false
+      }}
+    >
+      <Stack.Screen name="(tabs)" />
+    </Stack>
+  );
+};

@@ -27,7 +27,7 @@ export default function RegisterForm() {
     }
   });
   const { isLoading, showLoading, hideLoading } = useLoading();
-  console.log(isLoading);
+
   const onSubmit: SubmitHandler<AuthSchemaType> = async (data) => {
     try {
       showLoading();

@@ -1,8 +1,15 @@
+import { useAuth } from '@/providers/auth-provider';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import Ionicons from '@expo/vector-icons/Ionicons';
-import { Tabs } from 'expo-router';
+import { Redirect, Tabs } from 'expo-router';
 
 const TabsRootLayout = () => {
+  const { user } = useAuth();
+
+  if (!user) {
+    return <Redirect href={'/(auth)/login'} />;
+  }
+
   return (
     <Tabs
       screenOptions={{

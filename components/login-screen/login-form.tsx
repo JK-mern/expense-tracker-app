@@ -1,3 +1,4 @@
+import { useLoading } from '@/providers/loading-provider';
 import { Login, loginSchema } from '@/schemas/auth';
 import { signInWithEmail } from '@/services/auth-service/auth-service';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -12,7 +13,6 @@ import {
   View
 } from 'react-native';
 import GoogleLogo from '../../assets/svgs/google-logo.svg';
-import { useLoading } from '@/providers/loading-provider';
 
 export default function LoginForm() {
   const [, setIsErrorToastVisible] = useState<boolean>(false);
