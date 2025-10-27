@@ -31,7 +31,7 @@ export default function LoginForm() {
       const result = await signInWithEmail(data);
       if (result) {
         setIsErrorToastVisible(false);
-        router.push('/(auth)/register'); //TODO : change to appropriate route
+        router.push('/(tabs)/home');
       } else {
         setIsErrorToastVisible(true);
       }

@@ -48,7 +48,7 @@ export default function ProfileScreen() {
       }
       const isSignupSuccess = await createUser(data);
       if (isSignupSuccess.success) {
-        router.push('/(auth)/login'); //TODO: Route to homepage when its ready
+        router.push('/(tabs)/home');
       }
     } catch (error) {
       console.log(error);
