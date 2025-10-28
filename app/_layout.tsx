@@ -11,6 +11,7 @@ import * as NavigationBar from 'expo-navigation-bar';
 import { Stack } from 'expo-router';
 import { useEffect } from 'react';
 import { Platform } from 'react-native';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 import '../global.css';
 
 export default function RootLayout() {
@@ -40,7 +41,9 @@ export default function RootLayout() {
   return (
     <AuthProvider>
       <LoadingProvider>
-        <NavigationLayout />
+        <SafeAreaProvider>
+          <NavigationLayout />
+        </SafeAreaProvider>
       </LoadingProvider>
     </AuthProvider>
   );
