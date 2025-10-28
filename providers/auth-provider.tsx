@@ -1,3 +1,4 @@
+import Loader from '@/components/loader/loader';
 import { supabase } from '@/lib/supabase/supabase';
 import { User } from '@supabase/supabase-js';
 import {
@@ -10,23 +11,28 @@ import {
 
 type AuthContextType = {
   user: User | null;
+  isLoading: boolean;
 };
 
 const initalValue: AuthContextType = {
-  user: null
+  user: null,
+  isLoading: false
 };
 const AuthContext = createContext<AuthContextType>(initalValue);
 export const useAuth = () => useContext(AuthContext);
 
 export const AuthProvider: React.FC<PropsWithChildren> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
+  const [isLoading, setLoading] = useState<boolean>(false);
 
   useEffect(() => {
     async function getCurrentUser() {
+      setLoading(true);
       const {
         data: { session }
       } = await supabase.auth.getSession();
       setUser(session?.user ?? null);
+      setLoading(false);
     }
 
     if (!user) {
@@ -47,6 +53,8 @@ export const AuthProvider: React.FC<PropsWithChildren> = ({ children }) => {
   }, []);
 
   return (
-    <AuthContext.Provider value={{ user }}>{children}</AuthContext.Provider>
+    <AuthContext.Provider value={{ user, isLoading }}>
+      {isLoading ? <Loader /> : children}
+    </AuthContext.Provider>
   );
 };
