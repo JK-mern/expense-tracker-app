@@ -1,14 +1,19 @@
+import { getFormattedPrice } from '@/utils';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import { Text, View } from 'react-native';
 
-const Balance = () => {
+type BalanceProps = {
+  currentBalance: number;
+};
+
+const Balance = ({ currentBalance }: BalanceProps) => {
   return (
     <View className="rounded-3xl bg-primary p-6">
       <View className="flex flex-row items-start justify-between">
         <View className="">
           <Text className="text-sm text-white/80">Current Balance</Text>
           <Text className="mt-1 font-inter-bold text-4xl text-white/80">
-            $2,450.00
+            {getFormattedPrice(currentBalance)}
           </Text>
         </View>
         <View className="opacity-50">
