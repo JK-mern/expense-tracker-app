@@ -13,7 +13,7 @@ const categories: CategoryExpenseProps[] = [
   { categoryName: 'Bills', iconName: 'receipt-long' }
 ];
 
-const CategoryWiseExpense = () => {
+export default function CategoryWiseExpense() {
   return (
     <View className="">
       <Text className="mb-4 font-inter-bold text-xl">Categories</Text>
@@ -28,9 +28,7 @@ const CategoryWiseExpense = () => {
       </View>
     </View>
   );
-};
-
-export default CategoryWiseExpense;
+}
 
 const CategoryExpense = ({ categoryName, iconName }: CategoryExpenseProps) => {
   return (
