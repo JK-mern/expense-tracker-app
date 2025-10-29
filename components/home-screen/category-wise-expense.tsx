@@ -15,15 +15,17 @@ const categories: CategoryExpenseProps[] = [
 
 export default function CategoryWiseExpense() {
   return (
-    <View className="">
+    <View>
       <Text className="mb-4 font-inter-bold text-xl">Categories</Text>
-      <View className="grid grid-cols-2 gap-4">
+
+      <View className="flex-row flex-wrap justify-between gap-y-4">
         {categories.map((category) => (
-          <CategoryExpense
-            key={category.categoryName}
-            categoryName={category.categoryName}
-            iconName={category.iconName}
-          />
+          <View key={category.categoryName} className="w-[48%]">
+            <CategoryExpense
+              categoryName={category.categoryName}
+              iconName={category.iconName}
+            />
+          </View>
         ))}
       </View>
     </View>
@@ -32,12 +34,12 @@ export default function CategoryWiseExpense() {
 
 const CategoryExpense = ({ categoryName, iconName }: CategoryExpenseProps) => {
   return (
-    <View className="flex flex-row items-center gap-3 rounded-2xl bg-white p-4">
+    <View className="shadow-sm flex-row items-center gap-3 rounded-2xl bg-white p-4">
       <View className="rounded-full bg-primary/20 p-3">
         <MaterialIcons name={iconName} size={24} color="#30e86e" />
       </View>
       <View className="flex gap-1">
-        <Text className="font-inter-medium"> {categoryName}</Text>
+        <Text className="font-inter-medium">{categoryName}</Text>
         <Text className="font-inter-bold text-lg">$150</Text>
       </View>
     </View>

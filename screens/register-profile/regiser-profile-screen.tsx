@@ -1,11 +1,11 @@
 import { checkUserNameExist, createUser } from '@/api/auth.api';
-import ProfileImagePicker from '@/components/profile-screen/image-picker';
+import ProfileImagePicker from '@/components/register-profile-screen/image-picker';
 import { useLoading } from '@/providers/loading-provider';
 import { createUserSchema, CreateUserType } from '@/schemas/auth';
-import { uploadImage } from '@/services/image-upload/image-upload';
+import { uploadImage } from '@/services/image-service/image-service';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { router, useLocalSearchParams } from 'expo-router';
-import { useState, useTransition } from 'react';
+import { useState } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import {
   ActivityIndicator,
@@ -16,7 +16,7 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-export default function ProfileScreen() {
+export default function RegisterProfileScreen() {
   const { userId } = useLocalSearchParams<{ userId: string }>();
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const {
