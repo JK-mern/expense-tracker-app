@@ -1,10 +1,10 @@
-import ProfileScreen from '@/screens/profile/profile-screen';
+import RegisterProfileScreen from '@/screens/register-profile/regiser-profile-screen';
 import { View } from 'react-native';
 
 export default function Profile() {
   return (
-    <View className="min-h-screen flex-1">
-      <ProfileScreen />
+    <View className="flex-1">
+      <RegisterProfileScreen />
     </View>
   );
 }

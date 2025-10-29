@@ -44,9 +44,11 @@ export default function ProfileImagePicker({
               className="h-28 w-28 rounded-full"
             />
           ) : (
-            <Image source={ProfileAvatar} className="h-28 w-28 rounded-full" />
+            <Image
+              source={ProfileAvatar}
+              className="max-h-28 max-w-28 rounded-full"
+            />
           )}
-
           <View className="absolute bottom-0 right-0 h-8 w-8 items-center justify-center rounded-full bg-green-500">
             <Ionicons name="camera" size={20} color="#fff" />
           </View>
