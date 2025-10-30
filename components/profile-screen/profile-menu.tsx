@@ -47,7 +47,6 @@ const Menu = (menu: MenuItem) => {
           <View className="flex flex-row items-center justify-between border-b border-black/5 p-4">
             <Text className="font-inter text-base">{item.itemName}</Text>
             <Pressable>
-              {/* //handle onPress */}
               <MaterialIcons size={20} name="chevron-right" />
             </Pressable>
           </View>
