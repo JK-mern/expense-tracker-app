@@ -50,3 +50,10 @@ export const signInWithEmail = async ({ email, password }: Login) => {
   if (error) throw new Error(error.message);
   return true;
 };
+
+export const signOut = async () => {
+  const { error } = await supabase.auth.signOut();
+  if (error) {
+    throw new Error('Failed to signout user');
+  }
+};

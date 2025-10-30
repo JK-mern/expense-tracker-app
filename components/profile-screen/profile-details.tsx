@@ -1,14 +1,27 @@
 import { UserProfileData } from '@/types/user/user';
-import { Pressable, Text, View } from 'react-native';
+import { ActivityIndicator, Pressable, Text, View } from 'react-native';
 import ProfileImage from './profile-image';
 import ProfileMenu from './profile-menu';
+import { useLoading } from '@/providers/loading-provider';
+import { signOut } from '@/services/auth-service/auth-service';
 
 type ProfileDetailsProps = {
   ProfileDetails: UserProfileData;
 };
 
 const ProfileDetails = ({ ProfileDetails }: ProfileDetailsProps) => {
-  const handleLogout = () => {}; //TODO: logout integration
+  const { showLoading, isLoading, hideLoading } = useLoading();
+
+  const handleLogout = async () => {
+    try {
+      showLoading();
+      await signOut();
+    } catch (error) {
+      console.log(error);
+    } finally {
+      hideLoading();
+    }
+  };
 
   return (
     <View>
@@ -29,7 +42,11 @@ const ProfileDetails = ({ ProfileDetails }: ProfileDetailsProps) => {
         className="mt-10 items-center rounded-xl bg-primary/30 py-3"
         onPress={handleLogout}
       >
-        <Text className="font-inter-bold text-base text-primary">Logout</Text>
+        {isLoading ? (
+          <ActivityIndicator color="#30e86e" size="small" />
+        ) : (
+          <Text className="font-inter-bold text-base text-primary">Logout</Text>
+        )}
       </Pressable>
     </View>
   );
