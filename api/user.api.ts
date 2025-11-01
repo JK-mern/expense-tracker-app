@@ -1,3 +1,4 @@
+import { API_ROUTES } from '@/constants/route';
 import { httpClient } from './httpClient';
 
 export type GetCurrentUserResponseType = {
@@ -11,7 +12,7 @@ export type GetCurrentUserResponseType = {
 
 export const getCurrentUser = async (): Promise<GetCurrentUserResponseType> => {
   try {
-    const result = await httpClient.get('user/currentUser');
+    const result = await httpClient.get(API_ROUTES.getCurrentUser.getPath());
     const data = result.data;
     return data;
   } catch (error) {
