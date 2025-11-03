@@ -13,6 +13,8 @@ import { useEffect } from 'react';
 import { Platform } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import '../global.css';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { PortalProvider } from '@gorhom/portal';
 
 export default function RootLayout() {
   const [fontsLoaded, fontError] = useFonts({
@@ -42,7 +44,11 @@ export default function RootLayout() {
     <AuthProvider>
       <LoadingProvider>
         <SafeAreaProvider>
-          <NavigationLayout />
+          <GestureHandlerRootView>
+            <PortalProvider>
+              <NavigationLayout />
+            </PortalProvider>
+          </GestureHandlerRootView>
         </SafeAreaProvider>
       </LoadingProvider>
     </AuthProvider>

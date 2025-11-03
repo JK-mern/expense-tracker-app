@@ -1,10 +1,11 @@
-import { Text, View } from 'react-native';
+import HistoryScreen from '@/screens/history/history';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 const History = () => {
   return (
-    <View>
-      <Text>History</Text>
-    </View>
+    <SafeAreaView className="flex-1">
+      <HistoryScreen />
+    </SafeAreaView>
   );
 };
 
