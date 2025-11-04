@@ -1,29 +1,38 @@
+import {
+  ExpenseCategories,
+  ExprenseCategoryAggregatedList
+} from '@/types/expense/expense';
+import { getFormattedPrice } from '@/utils';
+import { CategoryIcons } from '@/utils/icons';
 import { MaterialIcons } from '@expo/vector-icons';
 import { Text, View } from 'react-native';
 
 type CategoryExpenseProps = {
+  expense: ExprenseCategoryAggregatedList | undefined;
   categoryName: string;
-  iconName: keyof typeof MaterialIcons.glyphMap;
 };
 
-const categories: CategoryExpenseProps[] = [
-  { categoryName: 'Food', iconName: 'restaurant' },
-  { categoryName: 'Travel', iconName: 'commute' },
-  { categoryName: 'Shopping', iconName: 'shopping-bag' },
-  { categoryName: 'Bills', iconName: 'receipt-long' }
-];
+type CategoryWiseExpenseProps = {
+  aggregatedList: ExprenseCategoryAggregatedList[];
+  expenseCategories: ExpenseCategories[];
+};
 
-export default function CategoryWiseExpense() {
+export default function CategoryWiseExpense({
+  aggregatedList,
+  expenseCategories
+}: CategoryWiseExpenseProps) {
   return (
     <View>
       <Text className="mb-4 font-inter-bold text-xl">Categories</Text>
 
       <View className="flex-row flex-wrap justify-between gap-y-4">
-        {categories.map((category) => (
-          <View key={category.categoryName} className="w-[48%]">
+        {expenseCategories.map((categories) => (
+          <View key={categories.id} className="w-[48%]">
             <CategoryExpense
-              categoryName={category.categoryName}
-              iconName={category.iconName}
+              expense={aggregatedList.find(
+                (list) => list.categoryName === categories.name
+              )}
+              categoryName={categories.name}
             />
           </View>
         ))}
@@ -32,15 +41,21 @@ export default function CategoryWiseExpense() {
   );
 }
 
-const CategoryExpense = ({ categoryName, iconName }: CategoryExpenseProps) => {
+const CategoryExpense = ({ expense, categoryName }: CategoryExpenseProps) => {
   return (
     <View className="shadow-sm flex-row items-center gap-3 rounded-2xl bg-white p-4">
       <View className="rounded-full bg-primary/20 p-3">
-        <MaterialIcons name={iconName} size={24} color="#30e86e" />
+        <MaterialIcons
+          name={CategoryIcons[categoryName].iconName}
+          size={24}
+          color="#30e86e"
+        />
       </View>
-      <View className="flex gap-1">
+      <View className="flex gap-2">
         <Text className="font-inter-medium">{categoryName}</Text>
-        <Text className="font-inter-bold text-lg">$150</Text>
+        <Text className="font-inter-bold text-base text-text-light">
+          {getFormattedPrice(expense ? Number(expense.amount) : 0)}
+        </Text>
       </View>
     </View>
   );
