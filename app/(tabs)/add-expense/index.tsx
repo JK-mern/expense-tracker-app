@@ -1,10 +1,11 @@
-import { Text, View } from 'react-native';
+import AddExpenseScreen from '@/screens/add-expense/add-expense-screen';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 const AddExpense = () => {
   return (
-    <View>
-      <Text>Add Expense</Text>
-    </View>
+    <SafeAreaView className="flex-1">
+      <AddExpenseScreen />
+    </SafeAreaView>
   );
 };
 
