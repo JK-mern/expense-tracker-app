@@ -1,4 +1,5 @@
 import { getAllCategories } from '@/api/category.api';
+import { addExpense } from '@/api/expense.api';
 import Description from '@/components/add-expense/description';
 import SelectCategory from '@/components/add-expense/select-category';
 import SelectDate from '@/components/add-expense/select-date-category';
@@ -6,8 +7,7 @@ import SelectCategoriesBottomSheet from '@/components/common/select-category-she
 import SelectDateBottomSheet from '@/components/common/select-date-sheet';
 import { Header } from '@/components/home-screen';
 import { useLoading } from '@/providers/loading-provider';
-import { CreateExpese } from '@/schemas/expense/expense.dto';
-import { createExpenseSchema } from '@/schemas/expense/expense.schema';
+import { createExpenseSchema, CreateExpese } from '@/schemas/expense';
 import { ExpenseCategories } from '@/types/expense/expense';
 import { MaterialIcons } from '@expo/vector-icons';
 import BottomSheet from '@gorhom/bottom-sheet';
@@ -19,7 +19,13 @@ import {
   SubmitHandler,
   useForm
 } from 'react-hook-form';
-import { Pressable, Text, TextInput, View } from 'react-native';
+import {
+  ActivityIndicator,
+  Pressable,
+  Text,
+  TextInput,
+  View
+} from 'react-native';
 import { DateType } from 'react-native-ui-datepicker';
 
 const AddExpenseScreen = () => {
@@ -41,6 +47,7 @@ const AddExpenseScreen = () => {
     control,
     handleSubmit,
     setValue,
+    reset,
     formState: { errors }
   } = methods;
   const { showLoading, isLoading, hideLoading } = useLoading();
@@ -66,8 +73,21 @@ const AddExpenseScreen = () => {
     dateSelectBottomSheetRef.current?.close();
   };
 
-  //TODO : handle onSubmit
-  const onSubmit: SubmitHandler<CreateExpese> = async (data) => {};
+  //TODO : handle error and success toast
+  const onSubmit: SubmitHandler<CreateExpese> = async (data) => {
+    try {
+      showLoading();
+      await addExpense(data);
+      reset();
+      setSelectedCategoryId(null);
+      setSelectedCategoryName(null);
+      setSelectedDate(null);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      hideLoading();
+    }
+  };
 
   useEffect(() => {
     async function getCategories() {
@@ -130,9 +150,13 @@ const AddExpenseScreen = () => {
           onPress={handleSubmit(onSubmit)}
           className="rounded-xl bg-primary px-4 py-3"
         >
-          <Text className="text-center font-inter-bold text-base text-white">
-            Submit
-          </Text>
+          {isLoading ? (
+            <ActivityIndicator color="#ffff" />
+          ) : (
+            <Text className="text-center font-inter-bold text-base text-white">
+              Submit
+            </Text>
+          )}
         </Pressable>
       </View>
 
