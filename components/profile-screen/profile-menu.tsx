@@ -43,7 +43,7 @@ const Menu = (menu: MenuItem) => {
     <View className="gap-2">
       <Text className="font-inter-bold text-lg">{menu.menuName}</Text>
       {menu.items.map((item) => (
-        <View className="shadow-sm rounded-xl bg-white/50" key={item.itemName}>
+        <View className="shadow-sm rounded-xl bg-white" key={item.itemName}>
           <View className="flex flex-row items-center justify-between border-b border-black/5 p-4">
             <Text className="font-inter text-base">{item.itemName}</Text>
             <Pressable>
