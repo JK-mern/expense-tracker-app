@@ -3,7 +3,8 @@ import { Header } from '@/components/home-screen';
 import Loader from '@/components/loader/loader';
 import ProfileDetails from '@/components/profile-screen/profile-details';
 import { UserProfileData } from '@/types/user/user';
-import { useEffect, useState } from 'react';
+import BottomSheet from '@gorhom/bottom-sheet';
+import { useEffect, useRef, useState } from 'react';
 import { View } from 'react-native';
 
 const ProfileScreen = () => {
@@ -32,7 +33,7 @@ const ProfileScreen = () => {
   }
 
   return (
-    <View>
+    <View className="flex-1">
       <Header title="Profile" />
       <View className="flex gap-6 p-4">
         <ProfileDetails ProfileDetails={currentUserDetails} />

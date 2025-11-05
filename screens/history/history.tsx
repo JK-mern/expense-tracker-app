@@ -116,10 +116,10 @@ const HistoryScreen = () => {
       <View className="gap-6 px-4">
         <View className="flex flex-row justify-between gap-3">
           <CategoryList
-            onOpen={() => selectCategoryBottomSheetRef.current?.snapToIndex(1)}
+            onOpen={() => selectCategoryBottomSheetRef.current?.snapToIndex(2)}
           />
           <DatePicker
-            onOpen={() => datePickerBottomSheetRef.current?.snapToIndex(1)}
+            onOpen={() => datePickerBottomSheetRef.current?.snapToIndex(2)}
           />
         </View>
       </View>

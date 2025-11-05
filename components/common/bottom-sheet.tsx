@@ -7,14 +7,20 @@ type BottomSheetContainerProps = {
   children: React.ReactNode;
   title?: string;
   innerRef: React.RefObject<BottomSheetMethods | null>;
+  isContentPanningGestureEnabled?: boolean;
+  isHandlePanningGestureEnabled?: boolean;
+  isIndicatorDisabled?: boolean;
 };
 
 const BottomSheetContainer = ({
   children,
   title,
-  innerRef
+  innerRef,
+  isContentPanningGestureEnabled,
+  isHandlePanningGestureEnabled,
+  isIndicatorDisabled
 }: BottomSheetContainerProps) => {
-  const snapPoints = useMemo(() => ['40%', '50%'], []);
+  const snapPoints = useMemo(() => ['16%', '40%', '50%'], []);
 
   const handleClose = useCallback(() => {
     innerRef?.current?.close();
@@ -27,6 +33,9 @@ const BottomSheetContainer = ({
       index={-1}
       enablePanDownToClose={true}
       onClose={handleClose}
+      enableHandlePanningGesture={isHandlePanningGestureEnabled}
+      enableContentPanningGesture={isContentPanningGestureEnabled}
+      handleIndicatorStyle={{ opacity: isIndicatorDisabled ? 0 : 1 }}
     >
       <Text className="px-3 text-center font-inter-bold text-base">
         {title}

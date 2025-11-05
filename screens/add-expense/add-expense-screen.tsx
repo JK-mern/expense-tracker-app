@@ -132,12 +132,12 @@ const AddExpenseScreen = () => {
         </View>
 
         <SelectCategory
-          onSelect={() => categorySelectBottomSheetRef.current?.snapToIndex(1)}
+          onSelect={() => categorySelectBottomSheetRef.current?.snapToIndex(2)}
           categoryName={selectedCategoryName}
         />
 
         <SelectDate
-          onDateSelect={() => dateSelectBottomSheetRef.current?.snapToIndex(1)}
+          onDateSelect={() => dateSelectBottomSheetRef.current?.snapToIndex(2)}
           selectedDate={selectedDate}
         />
         <FormProvider {...methods}>
