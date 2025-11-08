@@ -9,5 +9,6 @@ export const CategoryIcons: CategoryIconMapType = {
   Food: { iconName: 'restaurant' },
   Travel: { iconName: 'commute' },
   Shopping: { iconName: 'shopping-bag' },
-  Bill: { iconName: 'receipt-long' }
+  Bill: { iconName: 'receipt-long' },
+  Investment: { iconName: 'moving' }
 };
