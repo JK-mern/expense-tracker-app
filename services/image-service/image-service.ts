@@ -15,7 +15,7 @@ export const uploadImage = async ({ uri, userId }: UploadImageType) => {
       .from('images')
       .upload(filePath, arrayBuffer, {
         cacheControl: '3600',
-        upsert: false
+        upsert: true
       });
 
     if (error) throw error;
