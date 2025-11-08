@@ -3,13 +3,12 @@ import { Header } from '@/components/home-screen';
 import Loader from '@/components/loader/loader';
 import ProfileDetails from '@/components/profile-screen/profile-details';
 import { UserProfileData } from '@/types/user/user';
-import BottomSheet from '@gorhom/bottom-sheet';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { View } from 'react-native';
 
 const ProfileScreen = () => {
   const [currentUserDetails, setCurrentUserDetails] = useState<UserProfileData>(
-    { email: '', profilePicture: '', userName: '' }
+    { email: '', profilePicture: '', userName: '', isProfileCompleted: false }
   );
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
@@ -17,7 +16,9 @@ const ProfileScreen = () => {
     async function fetchProfilePageData() {
       try {
         const [currentUser] = await Promise.all([getCurrentUser()]);
-        setCurrentUserDetails(currentUser.data);
+        if (currentUser) {
+          setCurrentUserDetails(currentUser);
+        }
       } catch (error) {
         console.log(error);
       } finally {

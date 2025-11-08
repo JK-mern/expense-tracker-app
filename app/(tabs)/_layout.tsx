@@ -1,13 +1,26 @@
+import Loader from '@/components/loader/loader';
 import { useAuth } from '@/providers/auth-provider';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { Redirect, Tabs } from 'expo-router';
 
 const TabsRootLayout = () => {
-  const { user } = useAuth();
+  const { user, userProfileDetails, isLoading } = useAuth();
 
   if (!user) {
     return <Redirect href={'/(auth)/login'} />;
+  }
+
+  if (user && !userProfileDetails) {
+    return <Redirect href={'/(auth)/profile'} />;
+  }
+
+  if (user && userProfileDetails && !userProfileDetails.isProfileCompleted) {
+    return <Redirect href={'/(auth)/profile'} />;
+  }
+
+  if (isLoading) {
+    return <Loader />;
   }
 
   return (
