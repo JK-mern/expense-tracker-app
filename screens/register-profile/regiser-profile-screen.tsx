@@ -38,6 +38,7 @@ export default function RegisterProfileScreen() {
       const isUserNameAvailable = await checkUserNameExist(data.userName);
       if (!isUserNameAvailable.data.isUserNameAvailable) {
         //TODO : Show toast when toast component is ready
+        return;
       }
       if (selectedImage) {
         const uploadedUrlPath = await uploadImage({
