@@ -34,5 +34,9 @@ export const API_ROUTES = {
   getTransactionHistory: {
     path: 'expense/history',
     getPath: () => 'expense/history'
+  },
+  updateCurrentBalance: {
+    path: 'balance/updateBalance',
+    getPath: () => 'balance/updateBalance'
   }
 };
