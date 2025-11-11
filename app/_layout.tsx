@@ -7,14 +7,15 @@ import {
   Inter_700Bold,
   useFonts
 } from '@expo-google-fonts/inter';
+import { PortalProvider } from '@gorhom/portal';
+import { Toaster } from 'burnt/web';
 import * as NavigationBar from 'expo-navigation-bar';
 import { Stack } from 'expo-router';
 import { useEffect } from 'react';
 import { Platform } from 'react-native';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import '../global.css';
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import { PortalProvider } from '@gorhom/portal';
 
 export default function RootLayout() {
   const [fontsLoaded, fontError] = useFonts({
@@ -46,6 +47,7 @@ export default function RootLayout() {
         <SafeAreaProvider>
           <GestureHandlerRootView>
             <PortalProvider>
+              <Toaster position="top-center" />
               <NavigationLayout />
             </PortalProvider>
           </GestureHandlerRootView>
