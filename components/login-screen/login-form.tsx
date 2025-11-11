@@ -2,6 +2,7 @@ import { useLoading } from '@/providers/loading-provider';
 import { Login, loginSchema } from '@/schemas/auth';
 import { signInWithEmail } from '@/services/auth-service/auth-service';
 import { zodResolver } from '@hookform/resolvers/zod';
+import * as Burnt from 'burnt';
 import { Link, router } from 'expo-router';
 import { useState } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
@@ -33,7 +34,12 @@ export default function LoginForm() {
         setIsErrorToastVisible(false);
         router.push('/(tabs)/home');
       } else {
-        setIsErrorToastVisible(true);
+        await Burnt.alert({
+          title: 'Invalid email or password',
+          preset: 'error',
+          message: 'check email and password',
+          duration: 2
+        });
       }
     } catch (error) {
       console.log(error);
