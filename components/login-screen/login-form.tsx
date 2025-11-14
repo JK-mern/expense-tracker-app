@@ -94,8 +94,10 @@ export default function LoginForm() {
         )}
       </View>
 
-      {/* TODO : update with appropriate Link */}
-      <Link href={'..'} className="ml-auto font-inter-medium text-primary">
+      <Link
+        href={'/(auth)/forgot-password'}
+        className="ml-auto font-inter-medium text-primary"
+      >
         Forgot password ?
       </Link>
 
