@@ -15,12 +15,14 @@ type AuthContextType = {
   user: User | null;
   isLoading: boolean;
   userProfileDetails: UserProfileData | null;
+  isAuthenticated: boolean;
 };
 
 const initalValue: AuthContextType = {
   user: null,
   isLoading: false,
-  userProfileDetails: null
+  userProfileDetails: null,
+  isAuthenticated: false
 };
 
 const AuthContext = createContext<AuthContextType>(initalValue);
@@ -31,6 +33,7 @@ export const AuthProvider: React.FC<PropsWithChildren> = ({ children }) => {
   const [isLoading, setLoading] = useState<boolean>(false);
   const [userProfileDetails, setUserProfileDetails] =
     useState<UserProfileData | null>(null);
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
 
   useEffect(() => {
     async function fetchUserAndProfile() {
@@ -43,6 +46,7 @@ export const AuthProvider: React.FC<PropsWithChildren> = ({ children }) => {
         if (currentUser) {
           const userDetails = await getCurrentUser();
           setUserProfileDetails(userDetails);
+          setIsAuthenticated(true);
         } else {
           setUserProfileDetails(null);
         }
@@ -64,6 +68,7 @@ export const AuthProvider: React.FC<PropsWithChildren> = ({ children }) => {
       if (event === 'SIGNED_OUT') {
         setUser(null);
         setUserProfileDetails(null);
+        setIsAuthenticated(false);
       }
       const currentUser = session?.user ?? null;
       if (currentUser) {
@@ -71,6 +76,7 @@ export const AuthProvider: React.FC<PropsWithChildren> = ({ children }) => {
         try {
           const userDetails = await getCurrentUser();
           setUserProfileDetails(userDetails);
+          setIsAuthenticated(true);
         } catch {
         } finally {
           setLoading(false);
@@ -78,13 +84,16 @@ export const AuthProvider: React.FC<PropsWithChildren> = ({ children }) => {
       } else {
         setUser(currentUser);
         setUserProfileDetails(null);
+        setIsAuthenticated(false);
       }
     });
     return () => subscription.unsubscribe();
   }, []);
 
   return (
-    <AuthContext.Provider value={{ user, isLoading, userProfileDetails }}>
+    <AuthContext.Provider
+      value={{ user, isLoading, userProfileDetails, isAuthenticated }}
+    >
       {isLoading ? <Loader /> : children}
     </AuthContext.Provider>
   );

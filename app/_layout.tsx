@@ -1,4 +1,4 @@
-import { AuthProvider } from '@/providers/auth-provider';
+import { AuthProvider, useAuth } from '@/providers/auth-provider';
 import { LoadingProvider } from '@/providers/loading-provider';
 import {
   Inter_400Regular,
@@ -58,13 +58,15 @@ export default function RootLayout() {
 }
 
 const NavigationLayout = () => {
+  const { isAuthenticated } = useAuth();
+
   return (
-    <Stack
-      screenOptions={{
-        headerShown: false
-      }}
-    >
-      <Stack.Screen name="(tabs)" />
+    <Stack>
+      <Stack.Protected guard={isAuthenticated}>
+        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+      </Stack.Protected>
+
+      <Stack.Screen name="(auth)" options={{ headerShown: false }} />
     </Stack>
   );
 };
