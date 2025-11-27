@@ -18,7 +18,7 @@ const Description = () => {
           render={({ field }) => (
             <TextInput
               multiline={true}
-              className="rounded-xl border-none bg-transparent px-2 py-3 font-inter text-base text-text-light placeholder:text-text-light focus:outline-none"
+              className="rounded-xl border-none bg-transparent px-2 py-3 font-inter text-base text-text-light focus:outline-none"
               placeholder="Description"
               keyboardType="default"
               id="description"

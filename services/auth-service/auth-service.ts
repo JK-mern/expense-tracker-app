@@ -1,12 +1,11 @@
 import { supabase } from '@/lib/supabase/supabase';
 import { AuthSchemaType, Login } from '@/schemas/auth';
-import * as Linking from 'expo-linking';
 import { router } from 'expo-router';
 
-const resetURL = Linking.createURL('reset-password');
+const redirectTo = 'expense-tracker://reset-password';
 
 export const regisetUser = async ({ email, password }: AuthSchemaType) => {
-  const { error, data } = await supabase.auth.signUp({
+  const { error } = await supabase.auth.signUp({
     email,
     password,
     options: {
@@ -29,7 +28,7 @@ export const verifyOtp = async (email: string, token: string) => {
 };
 
 export const signInWithEmail = async ({ email, password }: Login) => {
-  const { data, error } = await supabase.auth.signInWithPassword({
+  const { error } = await supabase.auth.signInWithPassword({
     email,
     password
   });
@@ -62,8 +61,8 @@ export const signOut = async () => {
 };
 
 export const requestResetPassword = async (email: string) => {
-  const { data, error } = await supabase.auth.resetPasswordForEmail(email, {
-    redirectTo: resetURL
+  const { error } = await supabase.auth.resetPasswordForEmail(email, {
+    redirectTo
   });
   if (error) {
     throw new Error('Failed to request reset password url');
