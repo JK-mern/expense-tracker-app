@@ -1,4 +1,4 @@
-import ForgotPasswordScreen from '@/screens/forgot-password/forgot-password-screen';
+import { ForgotPasswordScreen } from '@/screens/forgot-password/forgot-password-screen';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 const ForgotPassword = () => {
