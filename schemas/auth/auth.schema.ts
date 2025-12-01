@@ -15,3 +15,13 @@ export const loginSchema = z.object({
   email: z.email('email is required'),
   password: z.string('Password is required')
 });
+
+export const resetPasswordSchema = z
+  .object({
+    password: z.string().min(8, 'Password must be 8 charachters long'),
+    confirmPassword: z.string().min(8, 'Password must be 8 charachters long')
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: 'Password do not match',
+    path: ['confirmPassword']
+  });
