@@ -18,14 +18,14 @@ type AuthContextType = {
   isAuthenticated: boolean;
 };
 
-const initalValue: AuthContextType = {
+const initialValue: AuthContextType = {
   user: null,
   isLoading: false,
   userProfileDetails: null,
   isAuthenticated: false
 };
 
-const AuthContext = createContext<AuthContextType>(initalValue);
+const AuthContext = createContext<AuthContextType>(initialValue);
 export const useAuth = () => useContext(AuthContext);
 
 export const AuthProvider: React.FC<PropsWithChildren> = ({ children }) => {
@@ -33,33 +33,7 @@ export const AuthProvider: React.FC<PropsWithChildren> = ({ children }) => {
   const [isLoading, setLoading] = useState<boolean>(false);
   const [userProfileDetails, setUserProfileDetails] =
     useState<UserProfileData | null>(null);
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
-
-  useEffect(() => {
-    async function fetchUserAndProfile() {
-      try {
-        setLoading(true);
-        const {
-          data: { session }
-        } = await supabase.auth.getSession();
-        const currentUser = session?.user ?? null;
-        if (currentUser) {
-          const userDetails = await getCurrentUser();
-          setUserProfileDetails(userDetails);
-          setIsAuthenticated(true);
-        } else {
-          setUserProfileDetails(null);
-        }
-        setUser(currentUser);
-      } catch (error) {
-        console.log(error);
-      } finally {
-        setLoading(false);
-      }
-    }
-
-    fetchUserAndProfile();
-  }, []);
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(true);
 
   useEffect(() => {
     const {
@@ -70,12 +44,22 @@ export const AuthProvider: React.FC<PropsWithChildren> = ({ children }) => {
         setUserProfileDetails(null);
         setIsAuthenticated(false);
       }
+
+      if (event === 'TOKEN_REFRESHED' || event === 'USER_UPDATED') {
+        if (session?.user) {
+          setUser(session.user);
+        }
+        return;
+      }
+
       const currentUser = session?.user ?? null;
-      if (currentUser) {
-        setLoading(true);
+      if (currentUser?.id) {
         try {
-          const userDetails = await getCurrentUser();
-          setUserProfileDetails(userDetails);
+          if (!userProfileDetails) {
+            const userDetails = await getCurrentUser();
+            setUserProfileDetails(userDetails);
+          }
+          setUser(currentUser);
           setIsAuthenticated(true);
         } catch {
         } finally {
@@ -85,6 +69,7 @@ export const AuthProvider: React.FC<PropsWithChildren> = ({ children }) => {
         setUser(currentUser);
         setUserProfileDetails(null);
         setIsAuthenticated(false);
+        setLoading(false);
       }
     });
     return () => subscription.unsubscribe();

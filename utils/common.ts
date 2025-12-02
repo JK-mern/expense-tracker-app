@@ -33,3 +33,11 @@ export const getFormattedDate = (date: Date) => {
   if (diffYears === 1) return 'A year ago';
   return `${diffYears} years ago`;
 };
+
+export const parseSupabaseUrl = (url: string) => {
+  let parsedUrl = url;
+  if (url.includes('#')) {
+    parsedUrl = url.replace('#', '?');
+  }
+  return parsedUrl;
+};

@@ -2,7 +2,7 @@ import { TransactionHistoryList } from '@/types/expense/expense';
 import { httpClient } from './httpClient';
 import { DateType } from 'react-native-ui-datepicker';
 import { API_ROUTES } from '@/constants/route';
-import { CreateExpese } from '@/schemas/expense/expense.dto';
+import { CreateExpense } from '@/schemas/expense/expense.dto';
 
 export type TransactionHistoryResult = {
   success: boolean;
@@ -14,7 +14,7 @@ export type TransactionHistoryResult = {
   };
 };
 
-type TrasactionHistoryRequest = {
+type TransactionHistoryRequest = {
   categoryId: number | null;
   date: DateType | null;
   page: number;
@@ -24,7 +24,7 @@ export const getTransactionHistory = async ({
   categoryId,
   date,
   page
-}: TrasactionHistoryRequest): Promise<TransactionHistoryList[]> => {
+}: TransactionHistoryRequest): Promise<TransactionHistoryList[]> => {
   try {
     const result = await httpClient.get(
       API_ROUTES.getTransactionHistory.getPath(),
@@ -43,7 +43,7 @@ export const getTransactionHistory = async ({
   }
 };
 
-export const addExpense = async (data: CreateExpese) => {
+export const addExpense = async (data: CreateExpense) => {
   try {
     const result = await httpClient.post(
       API_ROUTES.addNewExpense.getPath(),
