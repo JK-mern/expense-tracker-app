@@ -6,13 +6,13 @@ type LoadingContextType = {
   hideLoading: () => void;
 };
 
-const initalValue: LoadingContextType = {
+const initialValue: LoadingContextType = {
   isLoading: false,
   showLoading: () => {},
   hideLoading: () => {}
 };
 
-const LoadingContext = createContext<LoadingContextType>(initalValue);
+const LoadingContext = createContext<LoadingContextType>(initialValue);
 export const useLoading = () => useContext(LoadingContext);
 
 export const LoadingProvider: React.FC<PropsWithChildren> = ({ children }) => {

@@ -1,7 +1,7 @@
 import { API_ROUTES } from '@/constants/route';
 import {
   ExpenseCategories,
-  ExprenseCategoryAggregatedList
+  ExpenseCategoryAggregatedList
 } from '@/types/expense/expense';
 import { httpClient } from './httpClient';
 
@@ -32,7 +32,7 @@ export const getAllCategories = async (): Promise<ExpenseCategories[]> => {
 };
 
 export const getCategoryAggregatedExpenses = async (): Promise<
-  ExprenseCategoryAggregatedList[]
+  ExpenseCategoryAggregatedList[]
 > => {
   try {
     const result = await httpClient.get(

@@ -4,7 +4,7 @@ import { router } from 'expo-router';
 
 const redirectTo = 'expense-tracker://reset-password';
 
-export const regisetUser = async ({ email, password }: AuthSchemaType) => {
+export const registerUser = async ({ email, password }: AuthSchemaType) => {
   const { error } = await supabase.auth.signUp({
     email,
     password,
@@ -67,4 +67,42 @@ export const requestResetPassword = async (email: string) => {
   if (error) {
     throw new Error('Failed to request reset password url');
   }
+};
+
+export const setSupabaseSession = async ({
+  accessToken,
+  refreshToken
+}: {
+  accessToken: string;
+  refreshToken: string;
+}) => {
+  const { error } = await supabase.auth.setSession({
+    access_token: accessToken,
+    refresh_token: refreshToken
+  });
+
+  if (error) {
+    throw new Error('Failed to set session');
+  }
+};
+
+export const updateUserPassword = async (password: string) => {
+  const { error } = await supabase.auth.updateUser({
+    password: password
+  });
+
+  if (error && error.code === 'same_password') {
+    return {
+      status: false,
+      isSameAsPrevPassword: true
+    };
+  }
+
+  if (error) {
+    throw new Error('Failed to update user Password');
+  }
+
+  return {
+    status: true
+  };
 };
