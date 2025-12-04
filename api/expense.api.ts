@@ -11,6 +11,8 @@ export type TransactionHistoryResult = {
     amount: number;
     date: Date;
     categoryName: string;
+    balanceAmount: number;
+    description: string;
   };
 };
 
