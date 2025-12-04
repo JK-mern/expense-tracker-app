@@ -40,7 +40,7 @@ const ExpenseHistoryList = ({
   const renderItem: ListRenderItem<TransactionHistoryList> = useCallback(
     ({ item }) => (
       <View
-        className="flex flex-row items-center justify-between gap-6 p-3"
+        className="my-2 flex flex-row items-center justify-between gap-6 p-3"
         style={{ height: ITEM_HEIGHT }}
       >
         <View className="rounded-full bg-primary/20 p-3">
@@ -50,17 +50,21 @@ const ExpenseHistoryList = ({
             color="#30e86e"
           />
         </View>
-        <View className="flex flex-grow gap-1">
+        <View className="flex flex-grow">
           <Text className="font-inter-medium text-base">
             {getFormattedPrice(item.amount)}
           </Text>
-          <Text className="font-inter text-sm text-text-light">
+          <Text className="font-inter text-base text-text-light">
             {item.categoryName}
           </Text>
+          <Text className="font-inter text-base text-text-light">
+            {item.description}
+          </Text>
         </View>
-        <View>
-          <Text className="text- text-text-light">
-            {getFormattedDate(item.date)}
+        <View className="items-end justify-center gap-2">
+          <Text className="text-text-light">{getFormattedDate(item.date)}</Text>
+          <Text className="text-base text-text-light">
+            Bal: {getFormattedPrice(item.balanceAmount)}
           </Text>
         </View>
       </View>
@@ -99,7 +103,7 @@ const ExpenseHistoryList = ({
                 <Loader />
               </View>
             ) : isEndReached && expenseHistoryList.length !== 0 ? (
-              <View className="py-4">
+              <View className="mt-4 py-4">
                 <Text className="text-center text-text-light">
                   You have reached the end
                 </Text>
