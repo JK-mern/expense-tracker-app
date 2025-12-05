@@ -1,6 +1,6 @@
 import { checkUserExist } from '@/api/auth.api';
 import { authSchema, AuthSchemaType } from '@/schemas/auth';
-import { regisetUser } from '@/services/auth-service/auth-service';
+import { registerUser } from '@/services/auth-service/auth-service';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Link, router } from 'expo-router';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
@@ -36,8 +36,8 @@ export default function RegisterForm() {
         return;
       }
 
-      const isRegisterSuccessfull = await regisetUser(data);
-      if (isRegisterSuccessfull) {
+      const isRegisterSuccessful = await registerUser(data);
+      if (isRegisterSuccessful) {
         router.push({
           pathname: '/(auth)/verify',
           params: { email: data.email }

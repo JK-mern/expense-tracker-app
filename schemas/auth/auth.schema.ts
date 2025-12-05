@@ -2,7 +2,7 @@ import z from 'zod';
 
 export const authSchema = z.object({
   email: z.email('email is required'),
-  password: z.string().min(8, 'Password must be atleast 8 letters')
+  password: z.string().min(8, 'Password must be at least 8 letters')
 });
 
 export const createUserSchema = z.object({
@@ -18,8 +18,8 @@ export const loginSchema = z.object({
 
 export const resetPasswordSchema = z
   .object({
-    password: z.string().min(8, 'Password must be 8 charachters long'),
-    confirmPassword: z.string().min(8, 'Password must be 8 charachters long')
+    password: z.string().min(8, 'Password must be 8 characters long'),
+    confirmPassword: z.string().min(8, 'Password must be 8 characters long')
   })
   .refine((data) => data.password === data.confirmPassword, {
     message: 'Password do not match',

@@ -7,7 +7,7 @@ import { Balance, CategoryWiseExpense, Header } from '@/components/home-screen';
 import Loader from '@/components/loader/loader';
 import {
   ExpenseCategories,
-  ExprenseCategoryAggregatedList
+  ExpenseCategoryAggregatedList
 } from '@/types/expense/expense';
 import { useEffect, useState } from 'react';
 import { View } from 'react-native';
@@ -17,7 +17,7 @@ const HomeScreen = () => {
   const [currentBalance, setCurrentBalance] = useState<number>(0);
   const [categories, setCategories] = useState<ExpenseCategories[]>([]);
   const [aggregatedExpenses, setAggregatedExpenses] = useState<
-    ExprenseCategoryAggregatedList[]
+    ExpenseCategoryAggregatedList[]
   >([]);
 
   useEffect(() => {

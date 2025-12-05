@@ -47,7 +47,7 @@ export default function VerifyScreen() {
           />
         </View>
         <View className="mt-5 flex items-center gap-2">
-          <Text className="text-text-light">Didnt recieved the code ?</Text>
+          <Text className="text-text-light">Didnt received the code ?</Text>
           <Text className="text-primary">Resend Code </Text>
         </View>
       </View>

@@ -7,7 +7,7 @@ import SelectCategoriesBottomSheet from '@/components/common/select-category-she
 import SelectDateBottomSheet from '@/components/common/select-date-sheet';
 import { Header } from '@/components/home-screen';
 import { useLoading } from '@/providers/loading-provider';
-import { createExpenseSchema, CreateExpese } from '@/schemas/expense';
+import { CreateExpense, createExpenseSchema } from '@/schemas/expense';
 import { ExpenseCategories } from '@/types/expense/expense';
 import { MaterialIcons } from '@expo/vector-icons';
 import BottomSheet from '@gorhom/bottom-sheet';
@@ -54,12 +54,12 @@ const AddExpenseScreen = () => {
   const categorySelectBottomSheetRef = useRef<BottomSheet | null>(null);
   const dateSelectBottomSheetRef = useRef<BottomSheet | null>(null);
 
-  const handleCategorySelect = (categoyrId: number) => {
-    setSelectedCategoryId(categoyrId);
-    setValue('categoryId', categoyrId);
+  const handleCategorySelect = (categoryId: number) => {
+    setSelectedCategoryId(categoryId);
+    setValue('categoryId', categoryId);
     setSelectedCategoryName(
       () =>
-        categories.find((category) => category.id === categoyrId)?.name ?? null
+        categories.find((category) => category.id === categoryId)?.name ?? null
     );
     categorySelectBottomSheetRef.current?.close();
   };
@@ -74,7 +74,7 @@ const AddExpenseScreen = () => {
   };
 
   //TODO : handle error and success toast
-  const onSubmit: SubmitHandler<CreateExpese> = async (data) => {
+  const onSubmit: SubmitHandler<CreateExpense> = async (data) => {
     try {
       showLoading();
       await addExpense(data);
