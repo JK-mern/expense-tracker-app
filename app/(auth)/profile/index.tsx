@@ -1,4 +1,4 @@
-import RegisterProfileScreen from '@/screens/register-profile/regiser-profile-screen';
+import RegisterProfileScreen from '@/screens/register-profile/register-profile-screen';
 import { View } from 'react-native';
 
 export default function Profile() {

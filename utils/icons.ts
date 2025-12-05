@@ -10,5 +10,7 @@ export const CategoryIcons: CategoryIconMapType = {
   Travel: { iconName: 'commute' },
   Shopping: { iconName: 'shopping-bag' },
   Bill: { iconName: 'receipt-long' },
-  Investment: { iconName: 'moving' }
+  Investment: { iconName: 'moving' },
+  Entertainment: { iconName: 'gamepad' },
+  Family: { iconName: 'people' }
 };

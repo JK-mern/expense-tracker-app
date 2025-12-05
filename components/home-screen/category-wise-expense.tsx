@@ -1,6 +1,6 @@
 import {
   ExpenseCategories,
-  ExprenseCategoryAggregatedList
+  ExpenseCategoryAggregatedList
 } from '@/types/expense/expense';
 import { getFormattedPrice } from '@/utils';
 import { CategoryIcons } from '@/utils/icons';
@@ -8,12 +8,12 @@ import { MaterialIcons } from '@expo/vector-icons';
 import { Text, View } from 'react-native';
 
 type CategoryExpenseProps = {
-  expense: ExprenseCategoryAggregatedList | undefined;
+  expense: ExpenseCategoryAggregatedList | undefined;
   categoryName: string;
 };
 
 type CategoryWiseExpenseProps = {
-  aggregatedList: ExprenseCategoryAggregatedList[];
+  aggregatedList: ExpenseCategoryAggregatedList[];
   expenseCategories: ExpenseCategories[];
 };
 
