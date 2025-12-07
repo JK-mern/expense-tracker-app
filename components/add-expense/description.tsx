@@ -23,7 +23,7 @@ const Description = () => {
               keyboardType="default"
               id="description"
               value={field.value}
-              onChange={field.onChange}
+              onChangeText={field.onChange}
             />
           )}
         />
