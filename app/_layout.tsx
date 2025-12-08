@@ -17,6 +17,7 @@ import { Platform } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import '../global.css';
+import ReactQueryProvider from '@/providers/react-query-provider';
 
 export default function RootLayout() {
   const [fontsLoaded, fontError] = useFonts({
@@ -43,20 +44,21 @@ export default function RootLayout() {
   }
 
   return (
-    <AuthProvider>
-      <LoadingProvider>
-        <SafeAreaProvider>
-          <GestureHandlerRootView>
-            <PortalProvider>
-              <Toaster position="top-center" />
-              <StatusBar style="auto" />
-
-              <NavigationLayout />
-            </PortalProvider>
-          </GestureHandlerRootView>
-        </SafeAreaProvider>
-      </LoadingProvider>
-    </AuthProvider>
+    <ReactQueryProvider>
+      <AuthProvider>
+        <LoadingProvider>
+          <SafeAreaProvider>
+            <GestureHandlerRootView>
+              <PortalProvider>
+                <Toaster position="top-center" />
+                <StatusBar style="auto" />
+                <NavigationLayout />
+              </PortalProvider>
+            </GestureHandlerRootView>
+          </SafeAreaProvider>
+        </LoadingProvider>
+      </AuthProvider>
+    </ReactQueryProvider>
   );
 }
 
