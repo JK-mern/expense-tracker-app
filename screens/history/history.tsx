@@ -1,4 +1,3 @@
-import { getAllCategories } from '@/api/category.api';
 import { getTransactionHistory } from '@/api/expense.api';
 import SelectCategoriesBottomSheet from '@/components/common/select-category-sheet';
 import SelectDateBottomSheet from '@/components/common/select-date-sheet';
@@ -7,11 +6,9 @@ import DatePicker from '@/components/history/date-picker';
 import ExpenseHistoryList from '@/components/history/expense-history-list';
 import { Header } from '@/components/home-screen';
 import { Page_Size } from '@/constants/values';
+import { useGetAllCategories } from '@/hooks/api';
 import { useLoading } from '@/providers/loading-provider';
-import {
-  ExpenseCategories,
-  TransactionHistoryList
-} from '@/types/expense/expense';
+import { TransactionHistoryList } from '@/types/expense/expense';
 import { BottomSheetMethods } from '@gorhom/bottom-sheet/lib/typescript/types';
 import dayjs from 'dayjs';
 import { useCallback, useEffect, useRef, useState } from 'react';
@@ -23,9 +20,6 @@ const HistoryScreen = () => {
   const [transactionHistory, setTransactionHistory] = useState<
     TransactionHistoryList[]
   >([]);
-  const [expenseCategories, setExpenseCategories] = useState<
-    ExpenseCategories[]
-  >([]);
   const [selectedCategoryId, setSelectedCategoryId] = useState<number | null>(
     null
   );
@@ -35,6 +29,7 @@ const HistoryScreen = () => {
   const [isFetchingMoreData, setIsFetchingMoreData] = useState<boolean>(false);
   const selectCategoryBottomSheetRef = useRef<BottomSheetMethods | null>(null);
   const datePickerBottomSheetRef = useRef<BottomSheetMethods | null>(null);
+  const { data: expenseCategories = [] } = useGetAllCategories();
 
   const handleSelectCategory = (id: number) => {
     setSelectedCategoryId((prev) => (prev === id ? null : id));
@@ -101,14 +96,6 @@ const HistoryScreen = () => {
     setIsEndReached(false);
     fetchTransactions(1);
   }, [selectedCategoryId, selectedDate]);
-
-  useEffect(() => {
-    async function fetchCategoryData() {
-      const categories = await getAllCategories();
-      setExpenseCategories(categories);
-    }
-    fetchCategoryData();
-  }, []);
 
   return (
     <View className="flex-1">

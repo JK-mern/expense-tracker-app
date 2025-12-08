@@ -1,4 +1,3 @@
-import { getAllCategories } from '@/api/category.api';
 import { addExpense } from '@/api/expense.api';
 import Description from '@/components/add-expense/description';
 import SelectCategory from '@/components/add-expense/select-category';
@@ -6,13 +5,13 @@ import SelectDate from '@/components/add-expense/select-date-category';
 import SelectCategoriesBottomSheet from '@/components/common/select-category-sheet';
 import SelectDateBottomSheet from '@/components/common/select-date-sheet';
 import { Header } from '@/components/home-screen';
+import { useGetAllCategories } from '@/hooks/api';
 import { useLoading } from '@/providers/loading-provider';
 import { CreateExpense, createExpenseSchema } from '@/schemas/expense';
-import { ExpenseCategories } from '@/types/expense/expense';
 import { MaterialIcons } from '@expo/vector-icons';
 import BottomSheet from '@gorhom/bottom-sheet';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useEffect, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import {
   Controller,
   FormProvider,
@@ -33,7 +32,6 @@ const AddExpenseScreen = () => {
     null
   );
   const [selectedDate, setSelectedDate] = useState<DateType>(null);
-  const [categories, setCategories] = useState<ExpenseCategories[]>([]);
   const [selectedCategoryName, setSelectedCategoryName] = useState<
     string | null
   >(null);
@@ -53,6 +51,7 @@ const AddExpenseScreen = () => {
   const { showLoading, isLoading, hideLoading } = useLoading();
   const categorySelectBottomSheetRef = useRef<BottomSheet | null>(null);
   const dateSelectBottomSheetRef = useRef<BottomSheet | null>(null);
+  const { data: categories = [] } = useGetAllCategories();
 
   const handleCategorySelect = (categoryId: number) => {
     setSelectedCategoryId(categoryId);
@@ -88,19 +87,6 @@ const AddExpenseScreen = () => {
       hideLoading();
     }
   };
-
-  useEffect(() => {
-    async function getCategories() {
-      try {
-        const categories = await getAllCategories();
-        setCategories(categories);
-      } catch (error) {
-        console.log('failed to fetch categories', error);
-      }
-    }
-
-    getCategories();
-  }, []);
 
   return (
     <View className="flex-1">
