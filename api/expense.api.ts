@@ -1,8 +1,8 @@
-import { TransactionHistoryList } from '@/types/expense/expense';
-import { httpClient } from './httpClient';
-import { DateType } from 'react-native-ui-datepicker';
 import { API_ROUTES } from '@/constants/route';
 import { CreateExpense } from '@/schemas/expense/expense.dto';
+import { TransactionHistoryList } from '@/types/expense/expense';
+import { DateType } from 'react-native-ui-datepicker';
+import { httpClient } from './httpClient';
 
 export type TransactionHistoryResult = {
   success: boolean;
@@ -52,7 +52,6 @@ export const addExpense = async (data: CreateExpense) => {
       data
     );
     const response = result.data;
-    console.log(response);
   } catch (error) {
     throw error;
   }

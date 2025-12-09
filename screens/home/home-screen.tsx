@@ -1,38 +1,25 @@
-import { getCategoryAggregatedExpenses } from '@/api/category.api';
 import { Balance, CategoryWiseExpense, Header } from '@/components/home-screen';
 import Loader from '@/components/loader/loader';
 import { useGetAllCategories } from '@/hooks/api';
 import { useGetUserCurrentBalance } from '@/hooks/api/balance';
-import { ExpenseCategoryAggregatedList } from '@/types/expense/expense';
-import { useEffect, useState } from 'react';
+import { useGetAggregatedCategorywiseExpenses } from '@/hooks/api/category/useGetAggregatedCategorywiseExpense';
 import { View } from 'react-native';
 
 const HomeScreen = () => {
-  const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [aggregatedExpenses, setAggregatedExpenses] = useState<
-    ExpenseCategoryAggregatedList[]
-  >([]);
-  const { data: categories = [] } = useGetAllCategories();
-  const { data: currentBalance = 0 } = useGetUserCurrentBalance();
+  const { data: categories = [], isLoading: isFetchingAllCategories } =
+    useGetAllCategories();
+  const { data: currentBalance = 0, isLoading: isFetchingCurrentBalance } =
+    useGetUserCurrentBalance();
+  const {
+    data: aggregatedExpenses = [],
+    isLoading: isFetchingAggregatedCategorywiseExpense
+  } = useGetAggregatedCategorywiseExpenses();
 
-  useEffect(() => {
-    async function fetchData() {
-      try {
-        const [aggregatedExpenses] = await Promise.all([
-          getCategoryAggregatedExpenses()
-        ]);
-        setAggregatedExpenses(aggregatedExpenses);
-        setIsLoading(false);
-      } catch (e) {
-        console.log(e);
-      } finally {
-        setIsLoading(false);
-      }
-    }
-    fetchData();
-  }, []);
-
-  if (isLoading) {
+  if (
+    isFetchingAggregatedCategorywiseExpense ||
+    isFetchingAllCategories ||
+    isFetchingCurrentBalance
+  ) {
     return <Loader />;
   }
 

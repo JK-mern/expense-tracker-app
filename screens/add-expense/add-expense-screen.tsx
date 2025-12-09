@@ -5,12 +5,14 @@ import SelectDate from '@/components/add-expense/select-date-category';
 import SelectCategoriesBottomSheet from '@/components/common/select-category-sheet';
 import SelectDateBottomSheet from '@/components/common/select-date-sheet';
 import { Header } from '@/components/home-screen';
+import { DATA_QUERY_KEYS } from '@/constants/query-key';
 import { useGetAllCategories } from '@/hooks/api';
 import { useLoading } from '@/providers/loading-provider';
 import { CreateExpense, createExpenseSchema } from '@/schemas/expense';
 import { MaterialIcons } from '@expo/vector-icons';
 import BottomSheet from '@gorhom/bottom-sheet';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useQueryClient } from '@tanstack/react-query';
 import { useRef, useState } from 'react';
 import {
   Controller,
@@ -52,6 +54,7 @@ const AddExpenseScreen = () => {
   const categorySelectBottomSheetRef = useRef<BottomSheet | null>(null);
   const dateSelectBottomSheetRef = useRef<BottomSheet | null>(null);
   const { data: categories = [] } = useGetAllCategories();
+  const queryClient = useQueryClient();
 
   const handleCategorySelect = (categoryId: number) => {
     setSelectedCategoryId(categoryId);
@@ -77,6 +80,12 @@ const AddExpenseScreen = () => {
     try {
       showLoading();
       await addExpense(data);
+      queryClient.invalidateQueries({
+        queryKey: [DATA_QUERY_KEYS.getCurrentBalance]
+      });
+      queryClient.invalidateQueries({
+        queryKey: [DATA_QUERY_KEYS.getAggregatedCategorywiseExpense]
+      });
       reset();
       setSelectedCategoryId(null);
       setSelectedCategoryName(null);
