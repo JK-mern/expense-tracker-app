@@ -16,7 +16,7 @@ export type TransactionHistoryResult = {
   };
 };
 
-type TransactionHistoryRequest = {
+export type TransactionHistoryRequest = {
   categoryId: number | null;
   date: DateType | null;
   page: number;
