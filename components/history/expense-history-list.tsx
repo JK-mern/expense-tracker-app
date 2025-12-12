@@ -10,7 +10,7 @@ type Props = {
   expenseHistoryList: TransactionHistoryList[];
   onEndReached: () => void;
   isInitialDataLoading: boolean;
-  isFetchingMoreData: boolean;
+  isFetchingNextPage: boolean;
   isEndReached: boolean;
 };
 
@@ -20,15 +20,10 @@ const ExpenseHistoryList = ({
   expenseHistoryList,
   onEndReached,
   isInitialDataLoading,
-  isFetchingMoreData,
+  isFetchingNextPage,
   isEndReached
 }: Props) => {
   const onEndReachedCalledDuringMomentum = useRef(false);
-
-  const keyExtractor = useCallback(
-    (item: TransactionHistoryList) => String(item.id),
-    []
-  );
 
   const handleEndReached = () => {
     if (!onEndReachedCalledDuringMomentum.current) {
@@ -80,17 +75,8 @@ const ExpenseHistoryList = ({
     <View className="mt-8 flex-1">
       <FlatList
         data={expenseHistoryList}
-        keyExtractor={keyExtractor}
+        keyExtractor={(item, index) => `${item.id}-${index}`}
         renderItem={renderItem}
-        initialNumToRender={8}
-        maxToRenderPerBatch={8}
-        windowSize={7}
-        removeClippedSubviews={true}
-        getItemLayout={(_, index) => ({
-          length: ITEM_HEIGHT,
-          offset: ITEM_HEIGHT * index,
-          index
-        })}
         onEndReached={handleEndReached}
         onEndReachedThreshold={0.2}
         onMomentumScrollBegin={() => {
@@ -98,7 +84,7 @@ const ExpenseHistoryList = ({
         }}
         ListFooterComponent={() => (
           <>
-            {isFetchingMoreData ? (
+            {isFetchingNextPage ? (
               <View className="py-3">
                 <Loader />
               </View>
