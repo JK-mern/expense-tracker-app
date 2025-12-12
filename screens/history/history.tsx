@@ -1,35 +1,44 @@
-import { getTransactionHistory } from '@/api/expense.api';
 import SelectCategoriesBottomSheet from '@/components/common/select-category-sheet';
 import SelectDateBottomSheet from '@/components/common/select-date-sheet';
 import { CategoryList } from '@/components/history/category-list';
 import DatePicker from '@/components/history/date-picker';
 import ExpenseHistoryList from '@/components/history/expense-history-list';
 import { Header } from '@/components/home-screen';
-import { Page_Size } from '@/constants/values';
-import { useGetAllCategories } from '@/hooks/api';
-import { useLoading } from '@/providers/loading-provider';
-import { TransactionHistoryList } from '@/types/expense/expense';
+import { useGetAllCategories, useGetTransactionalHistory } from '@/hooks/api';
 import { BottomSheetMethods } from '@gorhom/bottom-sheet/lib/typescript/types';
 import dayjs from 'dayjs';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import { View } from 'react-native';
 import { DateType } from 'react-native-ui-datepicker';
 
 const HistoryScreen = () => {
-  const { isLoading, hideLoading, showLoading } = useLoading();
-  const [transactionHistory, setTransactionHistory] = useState<
-    TransactionHistoryList[]
-  >([]);
   const [selectedCategoryId, setSelectedCategoryId] = useState<number | null>(
     null
   );
   const [selectedDate, setSelectedDate] = useState<DateType>(null);
-  const [currentPage, setCurrentPage] = useState<number>(1);
-  const [isEndReached, setIsEndReached] = useState<boolean>(false);
-  const [isFetchingMoreData, setIsFetchingMoreData] = useState<boolean>(false);
   const selectCategoryBottomSheetRef = useRef<BottomSheetMethods | null>(null);
   const datePickerBottomSheetRef = useRef<BottomSheetMethods | null>(null);
   const { data: expenseCategories = [] } = useGetAllCategories();
+  const {
+    data: history,
+    isLoading,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage
+  } = useGetTransactionalHistory({
+    date: selectedDate,
+    categoryId: selectedCategoryId
+  });
+
+  const transactionHistory = useMemo(() => {
+    return history?.pages?.flat() ?? [];
+  }, [history]);
+
+  const onEndReached = () => {
+    if (hasNextPage && !isFetchingNextPage) {
+      fetchNextPage();
+    }
+  };
 
   const handleSelectCategory = (id: number) => {
     setSelectedCategoryId((prev) => (prev === id ? null : id));
@@ -46,56 +55,6 @@ const HistoryScreen = () => {
     });
     datePickerBottomSheetRef.current?.close();
   };
-
-  const fetchTransactions = useCallback(
-    async (requestedPage = 1) => {
-      if (requestedPage === 1) {
-        showLoading();
-      }
-
-      try {
-        if (requestedPage === 1) {
-          setIsEndReached(false);
-        }
-
-        if (requestedPage > 1) {
-          setIsFetchingMoreData(true);
-        }
-
-        const lists = await getTransactionHistory({
-          categoryId: selectedCategoryId,
-          date: selectedDate,
-          page: requestedPage
-        });
-
-        setTransactionHistory((prev) =>
-          requestedPage === 1 ? lists : [...prev, ...lists]
-        );
-        setIsEndReached(lists.length < Page_Size);
-        setCurrentPage(requestedPage);
-      } catch (error) {
-        console.log(error);
-      } finally {
-        hideLoading();
-        setIsFetchingMoreData(false);
-      }
-    },
-    [selectedCategoryId, selectedDate, currentPage, isEndReached]
-  );
-
-  const handleLoadMore = useCallback(() => {
-    if (isEndReached || isFetchingMoreData) {
-      return;
-    }
-    fetchTransactions(currentPage + 1);
-  }, [isEndReached, isFetchingMoreData]);
-
-  useEffect(() => {
-    setTransactionHistory([]);
-    setCurrentPage(1);
-    setIsEndReached(false);
-    fetchTransactions(1);
-  }, [selectedCategoryId, selectedDate]);
 
   return (
     <View className="flex-1">
@@ -114,9 +73,9 @@ const HistoryScreen = () => {
       <ExpenseHistoryList
         expenseHistoryList={transactionHistory}
         isInitialDataLoading={isLoading}
-        isEndReached={isEndReached}
-        isFetchingMoreData={isFetchingMoreData}
-        onEndReached={handleLoadMore}
+        isEndReached={!hasNextPage}
+        isFetchingNextPage={isFetchingNextPage}
+        onEndReached={onEndReached}
       />
 
       <SelectCategoriesBottomSheet
