@@ -1,5 +1,5 @@
-import { getCurrentUser } from '@/api/user.api';
 import Loader from '@/components/loader/loader';
+import { useGetCurrentUser } from '@/hooks/api/user';
 import { supabase } from '@/lib/supabase/supabase';
 import { UserProfileData } from '@/types/user/user';
 import { User } from '@supabase/supabase-js';
@@ -30,10 +30,9 @@ export const useAuth = () => useContext(AuthContext);
 
 export const AuthProvider: React.FC<PropsWithChildren> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
-  const [isLoading, setLoading] = useState<boolean>(false);
-  const [userProfileDetails, setUserProfileDetails] =
-    useState<UserProfileData | null>(null);
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(true);
+  const { data: userProfileDetails, isLoading: isProfileLoading } =
+    useGetCurrentUser(!!user);
+  const isAuthenticated = !!user;
 
   useEffect(() => {
     const {
@@ -41,8 +40,7 @@ export const AuthProvider: React.FC<PropsWithChildren> = ({ children }) => {
     } = supabase.auth.onAuthStateChange(async (event, session) => {
       if (event === 'SIGNED_OUT') {
         setUser(null);
-        setUserProfileDetails(null);
-        setIsAuthenticated(false);
+        return;
       }
 
       if (event === 'TOKEN_REFRESHED' || event === 'USER_UPDATED') {
@@ -53,33 +51,21 @@ export const AuthProvider: React.FC<PropsWithChildren> = ({ children }) => {
       }
 
       const currentUser = session?.user ?? null;
-      if (currentUser?.id) {
-        try {
-          if (!userProfileDetails) {
-            const userDetails = await getCurrentUser();
-            setUserProfileDetails(userDetails);
-          }
-          setUser(currentUser);
-          setIsAuthenticated(true);
-        } catch {
-        } finally {
-          setLoading(false);
-        }
-      } else {
-        setUser(currentUser);
-        setUserProfileDetails(null);
-        setIsAuthenticated(false);
-        setLoading(false);
-      }
+      setUser(currentUser);
     });
     return () => subscription.unsubscribe();
   }, []);
 
   return (
     <AuthContext.Provider
-      value={{ user, isLoading, userProfileDetails, isAuthenticated }}
+      value={{
+        user,
+        isLoading: isProfileLoading,
+        userProfileDetails: userProfileDetails ?? null,
+        isAuthenticated
+      }}
     >
-      {isLoading ? <Loader /> : children}
+      {isProfileLoading ? <Loader /> : children}
     </AuthContext.Provider>
   );
 };

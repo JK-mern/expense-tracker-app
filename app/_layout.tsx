@@ -66,7 +66,7 @@ const NavigationLayout = () => {
   const { isAuthenticated } = useAuth();
 
   return (
-    <Stack>
+    <Stack screenOptions={{ headerShown: false }}>
       <Stack.Protected guard={isAuthenticated}>
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
       </Stack.Protected>
