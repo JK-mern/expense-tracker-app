@@ -1,5 +1,6 @@
 import { AuthProvider, useAuth } from '@/providers/auth-provider';
 import { LoadingProvider } from '@/providers/loading-provider';
+import ReactQueryProvider from '@/providers/react-query-provider';
 import {
   Inter_400Regular,
   Inter_500Medium,
@@ -15,9 +16,9 @@ import { StatusBar } from 'expo-status-bar';
 import { useEffect } from 'react';
 import { Platform } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { NotifierWrapper } from 'react-native-notifier';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import '../global.css';
-import ReactQueryProvider from '@/providers/react-query-provider';
 
 export default function RootLayout() {
   const [fontsLoaded, fontError] = useFonts({
@@ -50,8 +51,10 @@ export default function RootLayout() {
           <SafeAreaProvider>
             <GestureHandlerRootView>
               <PortalProvider>
-                <Toaster position="top-center" />
-                <StatusBar style="auto" />
+                <NotifierWrapper>
+                  <Toaster position="top-center" />
+                  <StatusBar style="auto" />
+                </NotifierWrapper>
                 <NavigationLayout />
               </PortalProvider>
             </GestureHandlerRootView>
