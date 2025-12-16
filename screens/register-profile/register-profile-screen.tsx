@@ -9,11 +9,13 @@ import { useState } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import {
   ActivityIndicator,
+  Easing,
   Pressable,
   Text,
   TextInput,
   View
 } from 'react-native';
+import { Notifier, NotifierComponents } from 'react-native-notifier';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function RegisterProfileScreen() {
@@ -37,7 +39,16 @@ export default function RegisterProfileScreen() {
       showLoading();
       const isUserNameAvailable = await checkUserNameExist(data.userName);
       if (!isUserNameAvailable.data.isUserNameAvailable) {
-        //TODO : Show toast when toast component is ready
+        Notifier.showNotification({
+          title: 'Username is already used',
+          description: 'Please try another username',
+          Component: NotifierComponents.Alert,
+          showEasing: Easing.ease,
+          componentProps: {
+            alertType: 'error'
+          },
+          translucentStatusBar: true
+        });
         return;
       }
       if (selectedImage) {

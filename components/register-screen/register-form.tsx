@@ -13,6 +13,8 @@ import {
 } from 'react-native';
 import GoogleLogo from '../../assets/svgs/google-logo.svg';
 import { useLoading } from '@/providers/loading-provider';
+import { Notifier, NotifierComponents } from 'react-native-notifier';
+import { Easing } from 'react-native-reanimated';
 
 export default function RegisterForm() {
   const {
@@ -33,6 +35,16 @@ export default function RegisterForm() {
       showLoading();
       const isUserExist = await checkUserExist({ email: data.email });
       if (isUserExist.data.userExist) {
+        Notifier.showNotification({
+          title: 'Email is already used',
+          description: 'Please try another email',
+          Component: NotifierComponents.Alert,
+          showEasing: Easing.ease,
+          componentProps: {
+            alertType: 'error'
+          },
+          translucentStatusBar: true
+        });
         return;
       }
 

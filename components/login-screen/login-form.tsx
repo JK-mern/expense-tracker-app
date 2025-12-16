@@ -2,17 +2,18 @@ import { useLoading } from '@/providers/loading-provider';
 import { Login, loginSchema } from '@/schemas/auth';
 import { signInWithEmail } from '@/services/auth-service/auth-service';
 import { zodResolver } from '@hookform/resolvers/zod';
-import * as Burnt from 'burnt';
 import { Link, router } from 'expo-router';
 import { useState } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import {
   ActivityIndicator,
+  Easing,
   Pressable,
   Text,
   TextInput,
   View
 } from 'react-native';
+import { Notifier, NotifierComponents } from 'react-native-notifier';
 import GoogleLogo from '../../assets/svgs/google-logo.svg';
 
 export default function LoginForm() {
@@ -34,11 +35,15 @@ export default function LoginForm() {
         setIsErrorToastVisible(false);
         router.push('/(tabs)/home');
       } else {
-        await Burnt.alert({
+        Notifier.showNotification({
           title: 'Invalid email or password',
-          preset: 'error',
-          message: 'check email and password',
-          duration: 2
+          description: 'Please check your email and password again',
+          Component: NotifierComponents.Alert,
+          showEasing: Easing.ease,
+          componentProps: {
+            alertType: 'error'
+          },
+          translucentStatusBar: true
         });
       }
     } catch (error) {

@@ -22,11 +22,13 @@ import {
 } from 'react-hook-form';
 import {
   ActivityIndicator,
+  Easing,
   Pressable,
   Text,
   TextInput,
   View
 } from 'react-native';
+import { Notifier, NotifierComponents } from 'react-native-notifier';
 import { DateType } from 'react-native-ui-datepicker';
 
 const AddExpenseScreen = () => {
@@ -75,7 +77,6 @@ const AddExpenseScreen = () => {
     dateSelectBottomSheetRef.current?.close();
   };
 
-  //TODO : handle error and success toast
   const onSubmit: SubmitHandler<CreateExpense> = async (data) => {
     try {
       showLoading();
@@ -86,11 +87,33 @@ const AddExpenseScreen = () => {
       queryClient.invalidateQueries({
         queryKey: [DATA_QUERY_KEYS.getAggregatedCategorywiseExpense]
       });
+      queryClient.invalidateQueries({
+        queryKey: [DATA_QUERY_KEYS.getTransactionalHistory]
+      });
+      Notifier.showNotification({
+        title: 'Expense added successfully',
+        Component: NotifierComponents.Alert,
+        showEasing: Easing.ease,
+        componentProps: {
+          alertType: 'success'
+        },
+        translucentStatusBar: true
+      });
       reset();
       setSelectedCategoryId(null);
       setSelectedCategoryName(null);
       setSelectedDate(null);
     } catch (error) {
+      Notifier.showNotification({
+        title: 'Failed to add expense',
+        description: 'Please try again',
+        Component: NotifierComponents.Alert,
+        showEasing: Easing.ease,
+        componentProps: {
+          alertType: 'error'
+        },
+        translucentStatusBar: true
+      });
       console.log(error);
     } finally {
       hideLoading();
@@ -107,34 +130,61 @@ const AddExpenseScreen = () => {
             size={40}
             className="font-inter-bold text-text-light"
           />
+
           <View className="flex-1">
             <Controller
               control={control}
               name="amount"
-              rules={{}}
               render={({ field }) => (
                 <TextInput
-                  className="h-20 rounded-xl border-none bg-transparent px-2 py-3 text-right font-inter-bold text-5xl text-text-light focus:outline-none"
+                  className="h-20 rounded-xl border-none bg-transparent px-2 py-3 text-right font-inter-bold text-5xl text-text-light"
                   placeholder="0"
                   keyboardType="numeric"
-                  id="amount"
-                  onChangeText={(value) => field.onChange(Number(value))}
-                  value={String(field.value === 0 ? '' : field.value)}
+                  onChangeText={(value) =>
+                    field.onChange(value === '' ? undefined : Number(value))
+                  }
+                  value={field.value ? String(field.value) : ''}
                 />
               )}
             />
           </View>
         </View>
 
-        <SelectCategory
-          onSelect={() => categorySelectBottomSheetRef.current?.snapToIndex(2)}
-          categoryName={selectedCategoryName}
-        />
+        {errors.amount && (
+          <Text className="mb-2 font-inter-medium text-sm text-red-600">
+            {errors.amount.message}
+          </Text>
+        )}
 
-        <SelectDate
-          onDateSelect={() => dateSelectBottomSheetRef.current?.snapToIndex(2)}
-          selectedDate={selectedDate}
-        />
+        <View className="flex justify-center">
+          <SelectCategory
+            onSelect={() =>
+              categorySelectBottomSheetRef.current?.snapToIndex(2)
+            }
+            categoryName={selectedCategoryName}
+          />
+          {errors.categoryId && (
+            <Text className="my-2 ml-2 font-inter-medium text-sm text-red-600">
+              {errors.categoryId.message}
+            </Text>
+          )}
+        </View>
+
+        <View className="flex justify-center">
+          <SelectDate
+            onDateSelect={() =>
+              dateSelectBottomSheetRef.current?.snapToIndex(2)
+            }
+            selectedDate={selectedDate}
+          />
+
+          {errors.date && (
+            <Text className="my-2 ml-2 font-inter-medium text-sm text-red-600">
+              {errors.date.message}
+            </Text>
+          )}
+        </View>
+
         <FormProvider {...methods}>
           <Description />
         </FormProvider>

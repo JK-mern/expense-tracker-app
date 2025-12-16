@@ -4,6 +4,7 @@
 node_modules/
 .yarn/
 
+
 # Expo
 .expo/
 dist/
@@ -45,3 +46,4 @@ app-example
 
 
 .env
+**/.vscode/
