@@ -1,9 +1,11 @@
 import { checkUserNameExist, createUser } from '@/api/auth.api';
 import ProfileImagePicker from '@/components/register-profile-screen/image-picker';
+import { DATA_QUERY_KEYS } from '@/constants/query-key';
 import { useLoading } from '@/providers/loading-provider';
 import { createUserSchema, CreateUserType } from '@/schemas/auth';
 import { uploadImage } from '@/services/image-service/image-service';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { QueryClient } from '@tanstack/react-query';
 import { router, useLocalSearchParams } from 'expo-router';
 import { useState } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
@@ -19,6 +21,7 @@ import { Notifier, NotifierComponents } from 'react-native-notifier';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function RegisterProfileScreen() {
+  const queryClient = new QueryClient();
   const { userId } = useLocalSearchParams<{ userId: string }>();
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const {
@@ -60,6 +63,9 @@ export default function RegisterProfileScreen() {
       }
       const isSignupSuccess = await createUser(data);
       if (isSignupSuccess.success) {
+        queryClient.invalidateQueries({
+          queryKey: [DATA_QUERY_KEYS.getCurrentUser]
+        });
         router.push('/(tabs)/home');
       }
     } catch (error) {

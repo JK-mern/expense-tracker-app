@@ -32,7 +32,7 @@ export const AuthProvider: React.FC<PropsWithChildren> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
   const { data: userProfileDetails, isLoading: isProfileLoading } =
     useGetCurrentUser(!!user);
-  const isAuthenticated = !!user;
+  const isAuthenticated = !!user && !!userProfileDetails;
 
   useEffect(() => {
     const {
