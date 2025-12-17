@@ -7,10 +7,7 @@ const redirectTo = 'expense-tracker://reset-password';
 export const registerUser = async ({ email, password }: AuthSchemaType) => {
   const { error } = await supabase.auth.signUp({
     email,
-    password,
-    options: {
-      emailRedirectTo: 'myapp://login'
-    }
+    password
   });
 
   if (error) throw new Error(error.message);

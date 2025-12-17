@@ -15,7 +15,7 @@ export default function VerifyScreen() {
     try {
       showLoading();
       const session = await verifyOtp(email!, otp);
-      router.navigate({
+      router.push({
         pathname: '/(auth)/profile',
         params: {
           userId: session.user?.id
