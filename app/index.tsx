@@ -3,17 +3,11 @@ import { useAuth } from '@/providers/auth-provider';
 import { Redirect } from 'expo-router';
 
 export default function Index() {
-  const { isAuthenticated, isLoading, userProfileDetails } = useAuth();
+  const { isAuthenticated, isLoading } = useAuth();
 
   if (isLoading) {
     <Loader />;
   }
 
-  return (
-    <Redirect
-      href={
-        isAuthenticated && userProfileDetails ? '/(tabs)/home' : '/(auth)/login'
-      }
-    />
-  );
+  return <Redirect href={isAuthenticated ? '/(tabs)/home' : '/(auth)/login'} />;
 }
