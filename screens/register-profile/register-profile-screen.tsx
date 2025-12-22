@@ -79,7 +79,7 @@ export default function RegisterProfileScreen() {
 
   return (
     <SafeAreaView className="flex-1 justify-between">
-      <View className="gap-6 p-6">
+      <View className="gap-6 px-6">
         <ProfileImagePicker
           onSelect={handleSelectImgage}
           selectedImage={selectedImage}
@@ -128,7 +128,7 @@ export default function RegisterProfileScreen() {
         </View>
       </View>
 
-      <View className="mb-8 p-6">
+      <View className="mb-4 p-6">
         <Pressable
           className="rounded-xl bg-primary px-4 py-3"
           onPress={handleSubmit(onSubmit)}

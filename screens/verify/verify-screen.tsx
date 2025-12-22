@@ -1,7 +1,7 @@
 import { useLoading } from '@/providers/loading-provider';
 import { verifyOtp } from '@/services/auth-service/auth-service';
 import { router, useLocalSearchParams } from 'expo-router';
-import { useState, useTransition } from 'react';
+import { useState } from 'react';
 import { ActivityIndicator, Pressable, Text, View } from 'react-native';
 import { OtpInput } from 'react-native-otp-entry';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -29,8 +29,8 @@ export default function VerifyScreen() {
   };
 
   return (
-    <SafeAreaView className="flex min-h-screen justify-between p-6">
-      <View className="mt-1">
+    <SafeAreaView className="flex-1 justify-between px-6">
+      <View className="">
         <Text className="mb-3 text-center font-inter text-2xl font-bold text-gray-900">
           Enter Your Code
         </Text>
