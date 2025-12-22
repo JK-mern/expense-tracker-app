@@ -1,6 +1,6 @@
 import { useLoading } from '@/providers/loading-provider';
 import { verifyOtp } from '@/services/auth-service/auth-service';
-import { router, useLocalSearchParams } from 'expo-router';
+import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useState } from 'react';
 import { ActivityIndicator, Pressable, Text, View } from 'react-native';
 import { OtpInput } from 'react-native-otp-entry';
@@ -10,17 +10,18 @@ export default function VerifyScreen() {
   const { email } = useLocalSearchParams<{ email: string }>();
   const [otp, setOtp] = useState<string>('');
   const { isLoading, showLoading, hideLoading } = useLoading();
+  const router = useRouter();
 
   const handleVerify = async () => {
     try {
       showLoading();
+
       const session = await verifyOtp(email!, otp);
-      router.push({
-        pathname: '/(auth)/complete-profile',
-        params: {
-          userId: session.user?.id
-        }
-      });
+      if (session.user) {
+        router.replace({
+          pathname: '/(auth)/complete-profile'
+        });
+      }
     } catch (err) {
       console.log(err);
     } finally {
