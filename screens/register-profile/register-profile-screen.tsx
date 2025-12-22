@@ -7,7 +7,7 @@ import { createUserSchema, CreateUserType } from '@/schemas/auth';
 import { uploadImage } from '@/services/image-service/image-service';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useQueryClient } from '@tanstack/react-query';
-import { router, useLocalSearchParams } from 'expo-router';
+import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useState } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import {
@@ -23,8 +23,8 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function RegisterProfileScreen() {
   const queryClient = useQueryClient();
-  const { userId } = useLocalSearchParams<{ userId: string }>();
   const { user } = useAuth();
+  const router = useRouter();
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const {
     formState: { errors },
@@ -59,7 +59,7 @@ export default function RegisterProfileScreen() {
       if (selectedImage) {
         const uploadedUrlPath = await uploadImage({
           uri: selectedImage,
-          userId: userId
+          userId: user?.id!
         });
         data.profilePicture = uploadedUrlPath;
       }
