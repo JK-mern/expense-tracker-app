@@ -68,7 +68,6 @@ export default function RegisterProfileScreen() {
         queryClient.invalidateQueries({
           queryKey: [DATA_QUERY_KEYS.getCurrentUser]
         });
-        router.push('/(tabs)/home');
       }
     } catch (error) {
       console.log(error);

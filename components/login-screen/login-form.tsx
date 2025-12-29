@@ -2,7 +2,7 @@ import { useLoading } from '@/providers/loading-provider';
 import { Login, loginSchema } from '@/schemas/auth';
 import { signInWithEmail } from '@/services/auth-service/auth-service';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Link, router } from 'expo-router';
+import { Link, useNavigation, useRouter } from 'expo-router';
 import { useState } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import {
@@ -33,7 +33,6 @@ export default function LoginForm() {
       const result = await signInWithEmail(data);
       if (result) {
         setIsErrorToastVisible(false);
-        router.push('/(tabs)/home');
       } else {
         Notifier.showNotification({
           title: 'Invalid email or password',

@@ -11,7 +11,8 @@ import {
 import { PortalProvider } from '@gorhom/portal';
 import { Toaster } from 'burnt/web';
 import * as NavigationBar from 'expo-navigation-bar';
-import { Stack } from 'expo-router';
+import { Stack, useRouter } from 'expo-router';
+import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
 import { useEffect } from 'react';
 import { Platform } from 'react-native';
@@ -19,6 +20,8 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { NotifierWrapper } from 'react-native-notifier';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import '../global.css';
+
+SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
   const [fontsLoaded, fontError] = useFonts({
@@ -66,15 +69,35 @@ export default function RootLayout() {
 }
 
 const NavigationLayout = () => {
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, isLoading, isProfileLoading, isProfileCompleted } =
+    useAuth();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (isLoading || isProfileLoading) return;
+
+    if (isAuthenticated) {
+      if (!isProfileCompleted) {
+        router.replace('/(auth)/complete-profile');
+      } else if (isProfileCompleted) {
+        router.replace('/(tabs)/home');
+      }
+    } else {
+      router.replace('/(auth)/login');
+    }
+
+    SplashScreen.hide();
+  }, [isAuthenticated, isProfileCompleted, isLoading, isProfileLoading]);
 
   return (
     <Stack screenOptions={{ headerShown: false }}>
-      <Stack.Protected guard={isAuthenticated}>
+      <Stack.Protected guard={isAuthenticated && isProfileCompleted}>
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
       </Stack.Protected>
 
-      <Stack.Screen name="(auth)" options={{ headerShown: false }} />
+      <Stack.Protected guard={!isAuthenticated || !isProfileCompleted}>
+        <Stack.Screen name="(auth)" options={{ headerShown: false }} />
+      </Stack.Protected>
     </Stack>
   );
 };
