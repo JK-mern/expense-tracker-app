@@ -16,13 +16,17 @@ type AuthContextType = {
   isLoading: boolean;
   userProfileDetails: UserProfileData | null;
   isAuthenticated: boolean;
+  isProfileCompleted: boolean;
+  isProfileLoading: boolean;
 };
 
 const initialValue: AuthContextType = {
   user: null,
   isLoading: false,
   userProfileDetails: null,
-  isAuthenticated: false
+  isAuthenticated: false,
+  isProfileCompleted: false,
+  isProfileLoading: false
 };
 
 const AuthContext = createContext<AuthContextType>(initialValue);
@@ -30,42 +34,54 @@ export const useAuth = () => useContext(AuthContext);
 
 export const AuthProvider: React.FC<PropsWithChildren> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   const { data: userProfileDetails, isLoading: isProfileLoading } =
     useGetCurrentUser(!!user);
-  const isAuthenticated = !!user && !!userProfileDetails;
+  const isAuthenticated = !!user;
+  const isProfileCompleted = userProfileDetails?.isProfileCompleted ?? false;
 
   useEffect(() => {
     const {
       data: { subscription }
     } = supabase.auth.onAuthStateChange(async (event, session) => {
+      setIsLoading(true);
       if (event === 'SIGNED_OUT') {
         setUser(null);
+        setIsLoading(false);
         return;
       }
 
-      if (event === 'TOKEN_REFRESHED' || event === 'USER_UPDATED') {
-        if (session?.user) {
-          setUser(session.user);
-        }
+      if (
+        event === 'TOKEN_REFRESHED' ||
+        event === 'USER_UPDATED' ||
+        event === 'SIGNED_IN' ||
+        event === 'INITIAL_SESSION'
+      ) {
+        const currentUser = session?.user ?? null;
+        setUser(currentUser);
+        setIsLoading(false);
         return;
       }
-
-      const currentUser = session?.user ?? null;
-      setUser(currentUser);
+      setIsLoading(false);
     });
-    return () => subscription.unsubscribe();
+
+    return () => {
+      subscription.unsubscribe();
+    };
   }, []);
 
   return (
     <AuthContext.Provider
       value={{
         user,
-        isLoading: isProfileLoading,
+        isLoading: isLoading,
         userProfileDetails: userProfileDetails ?? null,
-        isAuthenticated
+        isAuthenticated,
+        isProfileCompleted,
+        isProfileLoading
       }}
     >
-      {isProfileLoading ? <Loader /> : children}
+      {isLoading || isProfileLoading ? <Loader /> : children}
     </AuthContext.Provider>
   );
 };
