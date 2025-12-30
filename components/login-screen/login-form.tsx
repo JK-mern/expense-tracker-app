@@ -81,7 +81,7 @@ export default function LoginForm() {
           control={control}
           render={({ field }) => (
             <TextInput
-              className="rounded-xl border border-gray-200 bg-white px-4 py-3 font-inter text-lg focus:border-primary focus:outline-none focus:ring-primary"
+              className="rounded-xl border border-gray-200 bg-white px-4 py-3 font-inter text-lg lowercase focus:border-primary focus:outline-none focus:ring-primary"
               placeholder="Email"
               textContentType="emailAddress"
               keyboardType="email-address"
