@@ -1,7 +1,10 @@
 import { checkUserExist } from '@/api/auth.api';
+import { supabase } from '@/lib/supabase/supabase';
+import { useLoading } from '@/providers/loading-provider';
 import { authSchema, AuthSchemaType } from '@/schemas/auth';
 import { registerUser } from '@/services/auth-service/auth-service';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import { Link, router } from 'expo-router';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import {
@@ -11,10 +14,9 @@ import {
   TextInput,
   View
 } from 'react-native';
-import GoogleLogo from '../../assets/svgs/google-logo.svg';
-import { useLoading } from '@/providers/loading-provider';
 import { Notifier, NotifierComponents } from 'react-native-notifier';
 import { Easing } from 'react-native-reanimated';
+import GoogleLogo from '../../assets/svgs/google-logo.svg';
 
 export default function RegisterForm() {
   const {
@@ -59,6 +61,22 @@ export default function RegisterForm() {
       console.log(error);
     } finally {
       hideLoading();
+    }
+  };
+
+  const handleSignupWithGoogle = async () => {
+    try {
+      await GoogleSignin.hasPlayServices();
+      const response = await GoogleSignin.signIn();
+      if (response.data?.idToken) {
+        const { error } = await supabase.auth.signInWithIdToken({
+          provider: 'google',
+          token: response.data.idToken
+        });
+        if (error) throw new Error('Failed to signInWithIdToken from supabase');
+      }
+    } catch (error) {
+      console.log(error);
     }
   };
 
@@ -130,7 +148,10 @@ export default function RegisterForm() {
         </Text>
         <View className="flex-1 border-t border-gray-300"></View>
       </View>
-      <Pressable className="flex flex-row items-center justify-center rounded-xl border border-gray-200 bg-white px-4 py-3">
+      <Pressable
+        className="flex flex-row items-center justify-center rounded-xl border border-gray-200 bg-white px-4 py-3"
+        onPress={handleSignupWithGoogle}
+      >
         <GoogleLogo width={20} height={20} className="mr-2" />
         <Text className="text-center font-inter-medium text-base">
           Sign up with Google
