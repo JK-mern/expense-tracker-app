@@ -1,7 +1,7 @@
 import z from 'zod';
 
 export const authSchema = z.object({
-  email: z.email('email is required'),
+  email: z.email('email is required').toLowerCase().trim(),
   password: z.string().min(8, 'Password must be at least 8 letters')
 });
 
@@ -12,7 +12,7 @@ export const createUserSchema = z.object({
 });
 
 export const loginSchema = z.object({
-  email: z.email('email is required'),
+  email: z.email('email is required').trim().toLowerCase(),
   password: z.string('Password is required')
 });
 
