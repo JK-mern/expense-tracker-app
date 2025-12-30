@@ -1,8 +1,13 @@
+import { supabase } from '@/lib/supabase/supabase';
 import { useLoading } from '@/providers/loading-provider';
 import { Login, loginSchema } from '@/schemas/auth';
 import { signInWithEmail } from '@/services/auth-service/auth-service';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Link, useNavigation, useRouter } from 'expo-router';
+import {
+  GoogleSignin,
+  statusCodes
+} from '@react-native-google-signin/google-signin';
+import { Link } from 'expo-router';
 import { useState } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import {
@@ -49,6 +54,22 @@ export default function LoginForm() {
       console.log(error);
     } finally {
       hideLoading();
+    }
+  };
+
+  const handleGoogleSignin = async () => {
+    try {
+      await GoogleSignin.hasPlayServices();
+      const response = await GoogleSignin.signIn();
+      if (response.data?.idToken) {
+        const { error } = await supabase.auth.signInWithIdToken({
+          provider: 'google',
+          token: response.data.idToken
+        });
+        if (error) throw new Error('Failed to signInWithIdToken from supabase');
+      }
+    } catch (error) {
+      console.log(error);
     }
   };
 
@@ -126,7 +147,10 @@ export default function LoginForm() {
         <View className="flex-1 border-t border-gray-300"></View>
       </View>
       <View>
-        <Pressable className="flex flex-row items-center justify-center rounded-xl border border-gray-200 bg-white px-4 py-3">
+        <Pressable
+          className="flex flex-row items-center justify-center rounded-xl border border-gray-200 bg-white px-4 py-3"
+          onPress={handleGoogleSignin}
+        >
           <GoogleLogo width={20} height={20} className="mr-2" />
           <Text className="ml-2 text-center font-inter-medium text-base">
             Login with Google
