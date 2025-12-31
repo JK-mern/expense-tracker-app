@@ -1,8 +1,9 @@
 import { useLoading } from '@/providers/loading-provider';
-import { verifyOtp } from '@/services/auth-service/auth-service';
+import { resendOtp, verifyOtp } from '@/services/auth-service/auth-service';
 import { useLocalSearchParams } from 'expo-router';
 import { useState } from 'react';
-import { ActivityIndicator, Pressable, Text, View } from 'react-native';
+import { ActivityIndicator, Easing, Pressable, Text, View } from 'react-native';
+import { Notifier, NotifierComponents } from 'react-native-notifier';
 import { OtpInput } from 'react-native-otp-entry';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -16,9 +17,46 @@ export default function VerifyScreen() {
       showLoading();
       await verifyOtp(email!, otp);
     } catch (err) {
-      console.log(err);
+      Notifier.showNotification({
+        title: 'Failed to verify Otp',
+        description: 'Please try again',
+        Component: NotifierComponents.Alert,
+        showEasing: Easing.ease,
+        componentProps: {
+          alertType: 'error'
+        },
+        translucentStatusBar: true
+      });
     } finally {
       hideLoading();
+    }
+  };
+
+  const handleResendOtp = async () => {
+    try {
+      await resendOtp(email);
+      Notifier.showNotification({
+        title: 'Otp send successfully',
+        description: 'Please try another email',
+        Component: NotifierComponents.Alert,
+        showEasing: Easing.ease,
+        componentProps: {
+          alertType: 'success'
+        },
+        translucentStatusBar: true
+      });
+    } catch (error) {
+      console.log(error);
+      Notifier.showNotification({
+        title: 'Failed to resend Otp',
+        description: 'Please try again',
+        Component: NotifierComponents.Alert,
+        showEasing: Easing.ease,
+        componentProps: {
+          alertType: 'error'
+        },
+        translucentStatusBar: true
+      });
     }
   };
 
@@ -42,7 +80,9 @@ export default function VerifyScreen() {
         </View>
         <View className="mt-5 flex items-center gap-2">
           <Text className="text-text-light">Didnt received the code ?</Text>
-          <Text className="text-primary">Resend Code </Text>
+          <Pressable onPress={handleResendOtp}>
+            <Text className="text-primary">Resend Code </Text>
+          </Pressable>
         </View>
       </View>
 
