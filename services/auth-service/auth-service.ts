@@ -103,3 +103,14 @@ export const updateUserPassword = async (password: string) => {
     status: true
   };
 };
+
+export const resendOtp = async (email: string) => {
+  const { error } = await supabase.auth.resend({
+    type: 'signup',
+    email: email
+  });
+
+  if (error) {
+    throw new Error('Failed to send to send resent otp ');
+  }
+};
