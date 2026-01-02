@@ -27,7 +27,6 @@
     "@supabase/supabase-js": "^2.74.0",
     "@tanstack/react-query": "^5.90.12",
     "axios": "^1.12.2",
-    "burnt": "^0.13.0",
     "dayjs": "^1.11.19",
     "expo": "~54.0.30",
     "expo-constants": "~18.0.12",

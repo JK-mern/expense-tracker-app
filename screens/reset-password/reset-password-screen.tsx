@@ -7,18 +7,19 @@ import {
 } from '@/services/auth-service/auth-service';
 import { parseSupabaseUrl } from '@/utils';
 import { zodResolver } from '@hookform/resolvers/zod';
-import * as Burnt from 'burnt';
 import * as Linking from 'expo-linking';
 import { router } from 'expo-router';
 import { useEffect } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import {
   ActivityIndicator,
+  Easing,
   Pressable,
   Text,
   TextInput,
   View
 } from 'react-native';
+import { Notifier, NotifierComponents } from 'react-native-notifier';
 
 const ResetPasswordScreen = () => {
   const { hideLoading, isLoading, showLoading } = useLoading();
@@ -38,13 +39,14 @@ const ResetPasswordScreen = () => {
       showLoading();
       const result = await updateUserPassword(data.password);
       if (result?.isSameAsPrevPassword) {
-        Burnt.toast({
-          title: 'New password should be different from the old password.',
-          preset: 'error',
-          message: 'Change your password',
-          duration: 3,
-          from: 'bottom',
-          haptic: 'error'
+        Notifier.showNotification({
+          title: 'New password cannot be same as previous password',
+          Component: NotifierComponents.Alert,
+          showEasing: Easing.ease,
+          componentProps: {
+            alertType: 'error'
+          },
+          translucentStatusBar: true
         });
         return;
       }
@@ -53,10 +55,14 @@ const ResetPasswordScreen = () => {
         router.replace('/(tabs)/home');
       }
     } catch (error) {
-      Burnt.toast({
-        title: 'Failed to update Password',
-        preset: 'error',
-        duration: 3
+      Notifier.showNotification({
+        title: 'Failed to update password',
+        Component: NotifierComponents.Alert,
+        showEasing: Easing.ease,
+        componentProps: {
+          alertType: 'error'
+        },
+        translucentStatusBar: true
       });
     } finally {
       hideLoading();
