@@ -9,7 +9,6 @@ import {
   useFonts
 } from '@expo-google-fonts/inter';
 import { PortalProvider } from '@gorhom/portal';
-import { Toaster } from 'burnt/web';
 import * as NavigationBar from 'expo-navigation-bar';
 import { Stack, useRouter } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
@@ -55,7 +54,6 @@ export default function RootLayout() {
             <GestureHandlerRootView>
               <PortalProvider>
                 <NotifierWrapper>
-                  <Toaster position="top-center" />
                   <StatusBar style="auto" />
                 </NotifierWrapper>
                 <NavigationLayout />
